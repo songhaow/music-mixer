@@ -20,6 +20,10 @@ export const TrackCanvasInterface = {
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
     bindEventHandlers(svg, trackInputInfoList);
+  },
+
+  getTrack1Start() {
+    return positionObj.track1Start;
   }
 };
 
