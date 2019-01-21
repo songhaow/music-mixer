@@ -5,11 +5,13 @@ export const TrackCanvasInterface = {
     // This is the original code to render the UI interface
     var trackInputInfoList =  [
       {
+        id: 'track1',
         color: 'red',
         backgroundcolor: '#F2D7D5',
         fname: '/static/source_audio/01-SW-042017.txt',
       },
       {
+        id: 'track2',
         color: 'green',
         backgroundcolor: '#D1F2EB',
         fname: '/static/source_audio/02-SW-062018.txt',
@@ -22,8 +24,19 @@ export const TrackCanvasInterface = {
     bindEventHandlers(svg, trackInputInfoList);
   },
 
-  getTrack1Start() {
-    return positionObj.track1Start;
+  getTrack2LengthPx() {
+    // We find the html element that has the track2 id (which is set by passing
+    // the trackInputInfoList 'id' field down through the render functions) and
+    // return it's length in pixels
+    return Number(d3.select('#track2').attr('width'));
+  },
+
+  getTrack2PosPx() {
+    return positionObj.track2Start;
+  },
+
+  getPlayCursorPosPx() {
+    return positionObj.playCursor;
   }
 };
 
@@ -74,6 +87,7 @@ function rerenderTracks(svg, trackInputInfoList) {
   var trackPaddingPx = 55;
   var trackHeightPx = 80;
   trackInputInfoList.forEach(function(trackInputInfo, i) {
+    var htmlElementId = trackInputInfo.id;
     var fname = trackInputInfo.fname;
     var color = trackInputInfo.color;
     var bckgdcolor = trackInputInfo.backgroundcolor;
@@ -83,7 +97,9 @@ function rerenderTracks(svg, trackInputInfoList) {
     var trackDisplayGroup = svg.append('g');
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
 
-    renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color,bckgdcolor,i);
+    renderAllTrackInfo(
+      htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
+      bckgdcolor, i);
   });
 }
 
@@ -101,13 +117,17 @@ function renderPlayCursor(mainSvgEl) {
 };
 
 /**
+ * @param {String}    htmlElementId, Id string for html element so we can access
+ *   things like track pixel width
  * @param {svg group} trackDisplayGroup: SVG group that the track info should be created in
  * @param {String}    fname: File system path where json file with track info is stored
  * @param {Number}    trackTopY: Y coordinate on SVG canvas for top of track
  * @param {Number}    trackBottomY: Y coordinate on SVG canvas for bottom of track
  * @param {String}    color: Color to render track in
  */
-function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color,bckgdcolor,i) {
+function renderAllTrackInfo(
+    htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
+    bckgdcolor, i) {
   d3.json(fname, function(error, data) {
     var bpm01 = data.bpm;
     bpm01 = d3.format(".0f")(bpm01)
@@ -137,8 +157,8 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
-      trackLinesGroup, beatListArray, color, bckgdcolor,trackTopY, trackBottomY, xScale, xAxis,xStart,i);
-
+      htmlElementId, trackLinesGroup, beatListArray, color, bckgdcolor,
+      trackTopY, trackBottomY, xScale, xAxis, xStart,i);
   });
 
 }
@@ -147,8 +167,8 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
  * @param xScale: how much to "zoom in" x axis
  */
 function renderDraggableTrack(
-        trackLinesGroup, beatListArray, color, bckgdcolor, trackTopY, trackBottomY,
-        xScale, xAxis, xStart,i) {
+        htmlElementId, trackLinesGroup, beatListArray, color, bckgdcolor,
+        trackTopY, trackBottomY, xScale, xAxis, xStart, i) {
   // X position of the last beat for the track
   var xMax = d3.max(beatListArray) * xScale;
 
@@ -164,6 +184,7 @@ function renderDraggableTrack(
   // Add background rectangle to group for continuous hit area for
   // dragging
   var trackBkgrnd = trackLinesGroup.append('rect');
+  trackBkgrnd.attr('id', htmlElementId);
   trackBkgrnd.attr('fill', bckgdcolor);
   trackBkgrnd.attr('class', 'dragRect');
   trackBkgrnd.attr('x',positionObj.track1Start);
