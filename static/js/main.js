@@ -14,6 +14,9 @@ var trackAudioManager = new TrackAudioManager();
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
+
+  console.log('track1 start: ' + TrackCanvasInterface.getTrack1Start());
+
   trackAudioManager.playTrack1();
 };
 document.querySelector('#pause1Button').onclick = function() {
