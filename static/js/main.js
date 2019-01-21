@@ -14,10 +14,23 @@ var trackAudioManager = new TrackAudioManager();
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
+  // NOTE: we have hardcoded only one song in the TrackAudioManager. We need to
+  // get both songs in there to play them at the same time.
+  var track1LengthMS = trackAudioManager.getTrack1LengthMS();
+  var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
+  var track2PosPx = TrackCanvasInterface.getTrack2PosPx();
+  var track2LengthPx = TrackCanvasInterface.getTrack2LengthPx();
 
-  console.log('track1 start: ' + TrackCanvasInterface.getTrack1Start());
+  var playCursorDeltaPx = playCursorPositionPx - track2PosPx;
+  if (playCursorDeltaPx < 0) {
+    playCursorDeltaPx = 0;
+  }
+  var track2PlayOffsetSeconds =
+    (playCursorDeltaPx / track2LengthPx) * track1LengthMS / 1000;
 
-  trackAudioManager.playTrack1();
+  console.log('offset seconds: ' + track2PlayOffsetSeconds);
+
+  trackAudioManager.playTrack1(track2PlayOffsetSeconds);
 };
 document.querySelector('#pause1Button').onclick = function() {
   trackAudioManager.stopTrack1();
