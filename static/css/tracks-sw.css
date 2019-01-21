@@ -1,0 +1,14 @@
+html, body{
+  margin: 10;
+  height: 100%;
+  color: "yellow";
+  background-color: "yellow";
+}
+line {
+  stroke: green;
+  stroke-width: 1px;
+}
+line.xaxis {
+  stroke: yellow;
+  stroke-width: 6px;
+}
