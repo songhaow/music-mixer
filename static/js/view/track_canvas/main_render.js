@@ -1,5 +1,15 @@
 import {TimeUtil} from '/static/js/view/utils/time_util.js';
 
+var positionObj = {
+  track1Start:0, // track1 starting coordinate (track1 not move for now)
+  track2Start:0, // track2 starting coordinate, changes with dragging
+  playCursor: 0, // playcursor in global coordinate
+  play1X:0,    // play1X = playCursor - track1Start
+  play2X:0,     // play2X = playCursor - track2Start
+  play1Scale:1,
+  play2Scale:1,
+};
+
 export const TrackCanvasInterface = {
   initialRender() {
     // This is the original code to render the UI interface
@@ -22,22 +32,22 @@ export const TrackCanvasInterface = {
     var svgHeight=365;
     var padding = 20;
     var svgBorder=1;
-    var bordercolor='black';
+    var borderColor='red';
 
     var svg = d3.select("#chartForTrack")
                 .append("svg")
                 .attr("width", svgWidth)
                 .attr("height", svgHeight);
-            svg.append("svg:g")
-                .attr("transform", "translate(50,50)");
+            // svg.append("svg:g");
+                // .attr("transform", "translate(50,50)");
 
     var borderPath = svg.append("rect")
                    			.attr("x", 0)
                    			.attr("y", 0)
                    			.attr("height", svgHeight)
                    			.attr("width", svgWidth)
-                   			.style("stroke", bordercolor)
-                   			.style("fill", "#eeeeee")
+                        .style("fill", "#eeeeee")
+                   			.style("stroke", borderColor)
                    			.style("stroke-width", svgBorder);
 
     console.log('svg-0: ', svg);
@@ -64,16 +74,6 @@ export const TrackCanvasInterface = {
   }
 };
 
-var positionObj = {
-  track1Start:0, // track1 starting coordinate (track1 not move for now)
-  track2Start:0, // track2 starting coordinate, changes with dragging
-  playCursor: 0, // playcursor in global coordinate
-  play1X:0,    // play1X = playCursor - track1Start
-  play2X:0,     // play2X = playCursor - track2Start
-  play1Scale:1,
-  play2Scale:1,
-};
-
 //Draw a base coordinate showing pixal position in the X direction
 function baseAxis(mainSvgEl,svgWidth){
   var axisScale = d3.scaleLinear()
@@ -87,7 +87,6 @@ function baseAxis(mainSvgEl,svgWidth){
   var texty =mainSvgEl.append('text')
           .attr('x', 600)
           .attr('y', 355)
-          // .style('fill', color)
           .style('font-size', '14px')
           .style('font-weight', 'bold')
           .text('Global coordinate');
@@ -195,7 +194,7 @@ function renderAllTrackInfo(
         // .style('fill', color)
         .style('font-size', '16px')
         .style('font-weight', 'bold')
-        .text('Song#'+j+':  '+ fname + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
+        .text('Song'+j+')  '+ fname + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
