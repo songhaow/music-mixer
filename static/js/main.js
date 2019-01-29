@@ -28,10 +28,11 @@ document.querySelector('#play1Button').onclick = function() {
   var track2PlayOffsetSeconds =
     (playCursorDeltaPx / track2LengthPx) * track1LengthMS / 1000;
 
-  console.log('offset seconds: ' + track2PlayOffsetSeconds);
+  // console.log('offset seconds: ' + track2PlayOffsetSeconds);
 
   trackAudioManager.playTrack1(track2PlayOffsetSeconds);
 };
+
 document.querySelector('#pause1Button').onclick = function() {
   trackAudioManager.stopTrack1();
 };

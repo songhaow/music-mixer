@@ -14,7 +14,7 @@ DATA_FOLDER = 'source_audio'
 # ---------------------------------------
 def get_all_song_keys(all_song_keys):
 
-    allfiles=os.listdir(DATA_FOLDER) # need undstand path better such as: /songhaow-test-123/
+    allfiles=os.listdir(DATA_FOLDER) # need undstand path better such as: /song1haow-test-123/
     print ("allfiles: ", allfiles)
 
     for filename in allfiles:

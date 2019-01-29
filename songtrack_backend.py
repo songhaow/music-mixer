@@ -24,6 +24,7 @@ def handle_song():
     content = ''
     with open('static/source_audio/eyes.m4a', 'rb') as fp:
         content = fp.read()
+        # consoloe.log('content: ', content);  #can not call this content twice
     return content
 
 if __name__ == '__main__':

@@ -10,6 +10,8 @@ export class TrackAudioManager {
   constructor () {
     this.audioBuffer1 = null;
     this.audioSource1 = null;
+    this.audioBuffer2 = null;
+    this.audioSource2 = null;
   }
 
   /**
@@ -29,9 +31,11 @@ export class TrackAudioManager {
     return 1000 * (leftChannelSampleArray.length / sampleRate);
   }
 
+
   setTrackBuffer1 (audioBuffer) {
     this.audioBuffer1 = audioBuffer;
   }
+
 
   resetTrackSource1 () {
     this.audioSource1 = audioCtx.createBufferSource();

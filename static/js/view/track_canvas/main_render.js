@@ -14,14 +14,38 @@ export const TrackCanvasInterface = {
         id: 'track2',
         color: 'green',
         backgroundcolor: '#D1F2EB',
-        fname: '/static/source_audio/02-SW-062018.txt',
+        fname: '/static/source_audio/05-SW-012018-Goldfather-SSL-01.txt',
       },
     ];
 
-    var svg = d3.select('svg');
+    var svgWidth=1400;
+    var svgHeight=365;
+    var padding = 20;
+    var svgBorder=1;
+    var bordercolor='black';
+
+    var svg = d3.select("#chartForTrack")
+                .append("svg")
+                .attr("width", svgWidth)
+                .attr("height", svgHeight);
+            svg.append("svg:g")
+                .attr("transform", "translate(50,50)");
+
+    var borderPath = svg.append("rect")
+                   			.attr("x", 0)
+                   			.attr("y", 0)
+                   			.attr("height", svgHeight)
+                   			.attr("width", svgWidth)
+                   			.style("stroke", bordercolor)
+                   			.style("fill", "#eeeeee")
+                   			.style("stroke-width", svgBorder);
+
+    console.log('svg-0: ', svg);
+
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
     bindEventHandlers(svg, trackInputInfoList);
+    baseAxis(svg, svgWidth);
   },
 
   getTrack2LengthPx() {
@@ -41,13 +65,44 @@ export const TrackCanvasInterface = {
 };
 
 var positionObj = {
-  track1Start:0, // track1 starting coordinate (not change for now)
+  track1Start:0, // track1 starting coordinate (track1 not move for now)
   track2Start:0, // track2 starting coordinate, changes with dragging
-  startPos: 0,
-  endPos: 0,
   playCursor: 0, // playcursor in global coordinate
-  play1X:0,    // play starting point
-  play2X:0     // play starting point
+  play1X:0,    // play1X = playCursor - track1Start
+  play2X:0,     // play2X = playCursor - track2Start
+  play1Scale:1,
+  play2Scale:1,
+};
+
+//Draw a base coordinate showing pixal position in the X direction
+function baseAxis(mainSvgEl,svgWidth){
+  var axisScale = d3.scaleLinear()
+                    .domain([0,svgWidth])
+                    .range([0,svgWidth]);
+  var xAxis = d3.axisBottom().scale(axisScale);
+  var xAxis00 = mainSvgEl.append("g");
+      xAxis00.attr('transform', 'translate(0,320)');
+      xAxis00.call(xAxis);
+
+  var texty =mainSvgEl.append('text')
+          .attr('x', 600)
+          .attr('y', 355)
+          // .style('fill', color)
+          .style('font-size', '14px')
+          .style('font-weight', 'bold')
+          .text('Global coordinate');
+}
+
+/**
+ * Render the blinking play cursor-line initially at position 0
+ * @param mainSvgEl: main SVG element to draw on
+ */
+function renderPlayCursor(mainSvgEl) {
+  var playCursorRect = mainSvgEl.append('rect')
+                                .attr('id', 'playCursorRect')
+                                .attr('height', mainSvgEl.attr('height'))
+                                .attr('width', 2)
+                                .attr('fill', 'blue');
 };
 
 /**
@@ -60,17 +115,16 @@ function bindEventHandlers(mainSvgEl, trackInputInfoList) {
   // attr because there should only be one cursor.
   var playCursorRect = mainSvgEl.select('#playCursorRect');
   mainSvgEl.on('mousedown', function() {
-    positionObj.playCursor = d3.event.offsetX
-    // console.log('playCursor01: ', positionObj.playCursor);
+    positionObj.playCursor = d3.event.offsetX;
     playCursorRect.attr('destX', positionObj.playCursor);
   });
   mainSvgEl.on('mouseup', function() {
     positionObj.playCursor = playCursorRect.attr('destX');
     playCursorRect.attr('x', positionObj.playCursor);
-    positionObj.play1X=positionObj.playCursor-positionObj.track1Start;
-    console.log('startX: ', positionObj.track1Start);
+    positionObj.play1X=(positionObj.playCursor-positionObj.track1Start)/positionObj.play1Scale;
+    positionObj.play2X=(positionObj.playCursor-positionObj.track2Start)/positionObj.play2Scale;
     console.log('playCursor: ', positionObj.playCursor);
-    console.log('play1X: ', positionObj.play1X);
+    console.log('play1X, play2X: ', positionObj.play1X, positionObj.play2X);
   });
 
   // Zoom event handler bindings
@@ -96,25 +150,11 @@ function rerenderTracks(svg, trackInputInfoList) {
 
     var trackDisplayGroup = svg.append('g');
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
-
     renderAllTrackInfo(
       htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
       bckgdcolor, i);
   });
 }
-
-/**
- * Render the blinking play cursor-line initially at position 0
- * @param mainSvgEl: main SVG element to draw on
- */
-function renderPlayCursor(mainSvgEl) {
-  var playCursorRect = mainSvgEl.append('rect')
-                                .attr('id', 'playCursorRect')
-                                .attr('height', mainSvgEl.attr('height'))
-                                .attr('width', 2)
-                                .attr('fill', 'blue');
-  // consle.log('playCursorRect', playCursorRect);
-};
 
 /**
  * @param {String}    htmlElementId, Id string for html element so we can access
@@ -132,17 +172,19 @@ function renderAllTrackInfo(
     var bpm01 = data.bpm;
     bpm01 = d3.format(".0f")(bpm01)
     var beatListArray = data.beat_list;
-    var xMin = d3.min(beatListArray);
+    var xOffset = d3.min(beatListArray);
+    var xMin = 0;
     var xMax = d3.max(beatListArray);
     var axisScale = d3.scaleLinear()
                       .domain([xMin,xMax])
-                      .range([0,1200]);
-    var xScale = 1200/xMax;
+                      .range([0,1400]);
+    var xScale = 1400/xMax;
 
-    if (i==0){positionObj.track1Start = xScale*beatListArray[0];}
-    else{positionObj.track2Start = xScale*beatListArray[0];}
+    if (i==0){positionObj.play1Scale = xScale}
+    else{positionObj.play2Scale = xScale}
 
-    var xStart = xScale*beatListArray[0];
+    // var xStart = xScale*beatListArray[0];
+    var xStart = 0;
     var xAxis = d3.axisBottom().scale(axisScale);
 
     var j=i+1;
@@ -158,9 +200,8 @@ function renderAllTrackInfo(
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
       htmlElementId, trackLinesGroup, beatListArray, color, bckgdcolor,
-      trackTopY, trackBottomY, xScale, xAxis, xStart,i);
+      trackTopY, trackBottomY, xScale, xAxis, xStart,i,xOffset);
   });
-
 }
 
 /**
@@ -168,7 +209,8 @@ function renderAllTrackInfo(
  */
 function renderDraggableTrack(
         htmlElementId, trackLinesGroup, beatListArray, color, bckgdcolor,
-        trackTopY, trackBottomY, xScale, xAxis, xStart, i) {
+        trackTopY, trackBottomY, xScale, xAxis, xStart, i, xOffset) {
+
   // X position of the last beat for the track
   var xMax = d3.max(beatListArray) * xScale;
 
@@ -184,29 +226,38 @@ function renderDraggableTrack(
   // Add background rectangle to group for continuous hit area for
   // dragging
   var trackBkgrnd = trackLinesGroup.append('rect');
-  trackBkgrnd.attr('id', htmlElementId);
-  trackBkgrnd.attr('fill', bckgdcolor);
-  trackBkgrnd.attr('class', 'dragRect');
-  trackBkgrnd.attr('x',positionObj.track1Start);
-  console.log('xStart', positionObj.track1Start);
-  trackBkgrnd.attr('y', trackTopY);
-  trackBkgrnd.attr('width', xMax);
-  trackBkgrnd.attr('height', trackBottomY - trackTopY);
+      trackBkgrnd.attr('id', htmlElementId);
+      trackBkgrnd.attr('fill', bckgdcolor);
+      trackBkgrnd.attr('class', 'dragRect');
+      trackBkgrnd.attr('x', '0');
+      trackBkgrnd.attr('y', trackTopY);
+      trackBkgrnd.attr('width', xMax);
+      trackBkgrnd.attr('height', trackBottomY - trackTopY);
 
-  var xAxis01 = trackLinesGroup.append("g")
-      .attr('transform', function(d) {return 'translate('+positionObj.track1Start+',' +trackBottomY+ ')';})
-      .call(xAxis);
+  // Add axis to view the pitch locations
+  var xAxis01 = trackLinesGroup.append("g");
+      xAxis01.attr('transform', 'translate(0,'+trackBottomY+')')
+      xAxis01.call(xAxis);
+
+  var ii;
+  var beatListScaled = [];
+  for (ii = 0; ii < beatListArray.length; ii++)
+      { beatListScaled[ii] = (beatListArray[ii]-xOffset)*xScale}
+
+  // console.log('beatListScale: ',beatListScaled);
 
   var beatLines = trackLinesGroup.selectAll('line')
-          .data(beatListArray);
-  beatLines.enter().append('line')
-      .style('stroke', color)
-      .attr('stroke-width', 1)
-      .attr('x1', function(d) {return (d*xScale-positionObj.track1Start)})
-      .attr('x2', function(d) {return (d*xScale-positionObj.track1Start)})
-      .attr('y1', trackTopY)
-      .attr('y2', trackBottomY);
+                  .data(beatListScaled);
+      beatLines.enter().append('line')
+        .style('stroke', color)
+        .attr('stroke-width', 1)
+        .attr('x1', function(d) {return d})
+        .attr('x2', function(d) {return d})
+        .attr('y1', trackTopY)
+        .attr('y2', trackBottomY);
   beatLines.exit().remove();
+
+  // console.log('d[0]: ', beatListScaled[0]);
 }
 
 /**
@@ -215,44 +266,29 @@ function renderDraggableTrack(
  * beat lines and the background hit area <rect>
  */
 function setDragSubject() {
-  positionObj.startPos = this.getCTM().e;
+  var tempX = this.getCTM().e;
   var baseY = this.getCTM().f;
-  // positionObj.startPos = baseX;
-  console.log('startX::: ', positionObj.startPos);
   return {
     x: d3.event.x,
     y: d3.event.y,
-    baseX: positionObj.startPos,
+    baseX: tempX,
     baseY: baseY,
   };
 }
-
 /**
  * @param d: undefined
  */
 function dragged() {
   var newX = d3.event.subject.baseX + (d3.event.x - d3.event.subject.x);
-  d3.select(this).attr(
-    "transform",
-    'translate('
-    + newX
-    + ','
-    + d3.event.subject.baseY
-    +')'
+  d3.select(this).attr("transform",
+    'translate('+ newX + ',' + d3.event.subject.baseY+')'
   );
-  // console.log('newX: ', newX)
-  // console.log('d3.event.subject.baseX: ',d3.event.subject.baseX);
-  // console.log('d3.event.x: ', d3.event.x);
-  // console.log('d3.event.subject.x: ', d3.event.subject.x);
 }
 
 function dragended() {
   d3.select(this).classed("active", false);
-  positionObj.endPos =d3.event.x;
-  console.log('d3.event.subject.baseX: ',d3.event.subject.baseX);
-  console.log('d3.event.x: ', d3.event.x);
-  console.log('d3.event.subject.x: ', d3.event.subject.x);
-  console.log('endX: ', positionObj.endPos);
-  var tempX = positionObj.playCursor-positionObj.track1Start;
-  console.log('tempX: ', tempX);
+  positionObj.track2Start = positionObj.track2Start + (d3.event.x - d3.event.subject.x);
+  console.log('mouseDownX: ', d3.event.subject.x);
+  console.log('mouseUpX: ',d3.event.x);
+  console.log('track2Start-new:', positionObj.track2Start);
 }
