@@ -9,6 +9,9 @@ export const TimeUtil = {
     timeSecond=Math.floor(timeSecond);
     var M = timeMinute.toString();
     var S = timeSecond.toString();
+    if (S.length === 1) {
+      S = '0' + S;
+    }
     return M + ':' + S;
   }
 };

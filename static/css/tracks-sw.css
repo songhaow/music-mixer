@@ -1,8 +1,10 @@
 html, body{
-  margin: 10;
+  /* margin: 10px; */
   height: 100%;
-  color: "yellow";
-  background-color: "yellow";
+  font-size: 16px;
+  font-family: serif;
+  /* color: red; */
+  /* background-color: #eeeeee; */
 }
 line {
   stroke: green;
@@ -10,5 +12,51 @@ line {
 }
 line.xaxis {
   stroke: yellow;
-  stroke-width: 6px;
+  stroke-width: 8px;
+}
+
+.head{
+  background-color: #003344;
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px;
+}
+
+.div01{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.divd3{
+  /* margin-left: auto;
+  margin-right: auto; */
+  margin-left:5px;
+}
+
+.div02{
+  width: 1150px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  background-color: #eeeeee;
+}
+
+.box{
+  width: 500px;
+  margin: 5px;
+  padding: 20px;
+  display: inline-block;
+  vertical-align: top;
+  background-color: white;
+  font-size: 16px;
+}
+
+/* fname01 input{
+  background-color: #888888;
+} */
+
+input:hover{
+  background-color: #eeeeee;
 }

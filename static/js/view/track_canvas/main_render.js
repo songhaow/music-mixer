@@ -30,32 +30,25 @@ export const TrackCanvasInterface = {
 
     var svgWidth=1400;
     var svgHeight=365;
-    var padding = 20;
-    var svgBorder=1;
-    var borderColor='red';
 
     var svg = d3.select("#chartForTrack")
                 .append("svg")
                 .attr("width", svgWidth)
                 .attr("height", svgHeight);
-            // svg.append("svg:g");
-                // .attr("transform", "translate(50,50)");
 
     var borderPath = svg.append("rect")
                    			.attr("x", 0)
                    			.attr("y", 0)
                    			.attr("height", svgHeight)
                    			.attr("width", svgWidth)
-                        .style("fill", "#eeeeee")
-                   			.style("stroke", borderColor)
-                   			.style("stroke-width", svgBorder);
+                        .style("fill", "#eeeeee");
 
-    console.log('svg-0: ', svg);
+    // console.log('svg-0: ', svg);
 
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
     bindEventHandlers(svg, trackInputInfoList);
-    baseAxis(svg, svgWidth);
+    baseAxis(svg);
   },
 
   getTrack2LengthPx() {
@@ -75,17 +68,18 @@ export const TrackCanvasInterface = {
 };
 
 //Draw a base coordinate showing pixal position in the X direction
-function baseAxis(mainSvgEl,svgWidth){
+function baseAxis(mainSvgEl){
+  var w = mainSvgEl.attr('width');
   var axisScale = d3.scaleLinear()
-                    .domain([0,svgWidth])
-                    .range([0,svgWidth]);
+                    .domain([0,w])
+                    .range([0,w]);
   var xAxis = d3.axisBottom().scale(axisScale);
   var xAxis00 = mainSvgEl.append("g");
       xAxis00.attr('transform', 'translate(0,320)');
       xAxis00.call(xAxis);
 
   var texty =mainSvgEl.append('text')
-          .attr('x', 600)
+          .attr('x', 670)
           .attr('y', 355)
           .style('font-size', '14px')
           .style('font-weight', 'bold')
@@ -127,31 +121,32 @@ function bindEventHandlers(mainSvgEl, trackInputInfoList) {
   });
 
   // Zoom event handler bindings
-  d3.select('#zoomSlider')
-    .on('change', function(evt) {
-      console.log('zoom:', d3.event.target.value);
-      rerenderTracks(mainSvgEl, trackInputInfoList);
-    });
+  // d3.select('#zoomSlider')
+  //   .on('change', function(evt) {
+  //     console.log('zoom:', d3.event.target.value);
+  //     rerenderTracks(mainSvgEl, trackInputInfoList);
+  //   });
 }
 
 function rerenderTracks(svg, trackInputInfoList) {
   svg.selectAll('g').remove();
 
-  var trackPaddingPx = 55;
-  var trackHeightPx = 80;
+  var trackPaddingPx = 30;
+  var trackHeightPx = 70;
   trackInputInfoList.forEach(function(trackInputInfo, i) {
     var htmlElementId = trackInputInfo.id;
     var fname = trackInputInfo.fname;
     var color = trackInputInfo.color;
     var bckgdcolor = trackInputInfo.backgroundcolor;
-    var trackTopY = i * (trackPaddingPx + trackHeightPx) + trackPaddingPx;
+    var trackTopY = i *1.5* (trackPaddingPx + trackHeightPx) + trackPaddingPx;
     var trackBottomY = trackTopY + trackHeightPx;
 
     var trackDisplayGroup = svg.append('g');
+    var w = svg.attr('width');
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
     renderAllTrackInfo(
       htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
-      bckgdcolor, i);
+      bckgdcolor, i, w);
   });
 }
 
@@ -164,10 +159,9 @@ function rerenderTracks(svg, trackInputInfoList) {
  * @param {Number}    trackBottomY: Y coordinate on SVG canvas for bottom of track
  * @param {String}    color: Color to render track in
  */
-function renderAllTrackInfo(
-    htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
-    bckgdcolor, i) {
-  d3.json(fname, function(error, data) {
+function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
+  color, bckgdcolor, i, w){
+    d3.json(fname, function(error, data) {
     var bpm01 = data.bpm;
     bpm01 = d3.format(".0f")(bpm01)
     var beatListArray = data.beat_list;
@@ -176,13 +170,12 @@ function renderAllTrackInfo(
     var xMax = d3.max(beatListArray);
     var axisScale = d3.scaleLinear()
                       .domain([xMin,xMax])
-                      .range([0,1400]);
-    var xScale = 1400/xMax;
+                      .range([0,w]);
+    var xScale = w/xMax;
 
     if (i==0){positionObj.play1Scale = xScale}
     else{positionObj.play2Scale = xScale}
 
-    // var xStart = xScale*beatListArray[0];
     var xStart = 0;
     var xAxis = d3.axisBottom().scale(axisScale);
 
@@ -191,10 +184,13 @@ function renderAllTrackInfo(
     trackDisplayGroup.append('text')
         .attr('x', 20)
         .attr('y', trackTopY - 8)
-        // .style('fill', color)
         .style('font-size', '16px')
         .style('font-weight', 'bold')
-        .text('Song'+j+')  '+ fname + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
+        .text('Song'+j+':  '+ fname + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
+    trackDisplayGroup.append('text')
+        .attr('x', 700)
+        .attr('y', trackBottomY + 35)
+        .text('(Second)');
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
@@ -289,5 +285,5 @@ function dragended() {
   positionObj.track2Start = positionObj.track2Start + (d3.event.x - d3.event.subject.x);
   console.log('mouseDownX: ', d3.event.subject.x);
   console.log('mouseUpX: ',d3.event.x);
-  console.log('track2Start-new:', positionObj.track2Start);
+  console.table('track2Start-new:', positionObj.track2Start);
 }
