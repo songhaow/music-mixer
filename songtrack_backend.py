@@ -41,7 +41,7 @@ def handle_song():
     # Now that we have the song name, we will use it to match a song in our
     # directory of songs.  We are assuming the song name will match a song in
     # the folder.  If it does not match, then we will get an error
-    song_path = f'static/source_audio/{song_name}'
+    song_path = 'static/source_audio/%s' % song_name
     content = ''
     with open(song_path, 'rb') as fp:
         content = fp.read()
