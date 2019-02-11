@@ -20,7 +20,7 @@ document.querySelector('#play1Button').onclick = function() {
   // TODO!!!
   // Call the new getTrackLengthMS function once you have implemented it and
   // pass the name of song1 (eyes.m4a)
-  var track1LengthMS = trackAudioManager.getTrack1LengthMS();
+  var track1LengthMS = trackAudioManager.getTrackLengthMS('eyes.m4a');
 
   var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
   var track2PosPx = TrackCanvasInterface.getTrack2PosPx();

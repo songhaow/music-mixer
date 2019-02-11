@@ -97,9 +97,20 @@ export class TrackAudioManager {
     //   http://pietschsoft.com/post/2015/09/05/JavaScript-Basics-How-to-create-a-Dictionary-with-KeyValue-pairs
     // Then copy the same calculations in the getTrack1LengthMS below to return
     //   the length
+    var buffer = this.songBufferInfo[songName]['buffer'];
+    if (buffer === null) {
+      // If sound is not loaded yet, we return default length of 0
+      return 0;
+    }
+    // Sample rate is # of samples per second (typically 44kHz)
+    var sampleRate = buffer.sampleRate;
+    // Get array of samples from the left channel (0th element in array of
+    // channels)
+    var leftChannelSampleArray = buffer.getChannelData(0);
+    var length = 1000 * (leftChannelSampleArray.length / sampleRate);
+    console.log(length);
+    return length;
   }
-
-
 
   /*** OLD METHODS ***/
 

@@ -6,7 +6,7 @@ export const AudioSourceInterface = {
     var xhr = new XMLHttpRequest();
 
     // GET the song from the backend python server
-    xhr.open('GET', 'http://localhost:8080/song?songName=' + songName, true);
+    xhr.open('GET', 'http://localhost:8000/song?songName=' + songName, true);
 
     xhr.responseType = 'arraybuffer';
     xhr.onload = function () {
