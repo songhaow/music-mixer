@@ -16,7 +16,12 @@ var trackAudioManager = new TrackAudioManager();
 document.querySelector('#play1Button').onclick = function() {
   // NOTE: we have hardcoded only one song in the TrackAudioManager. We need to
   // get both songs in there to play them at the same time.
-  var track1LengthMS = trackAudioManager.getTrack1LengthMS();
+
+  // TODO!!!
+  // Call the new getTrackLengthMS function once you have implemented it and
+  // pass the name of song1 (eyes.m4a)
+  var track1LengthMS = trackAudioManager.getTrackLengthMS('eyes.m4a');
+
   var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
   var track2PosPx = TrackCanvasInterface.getTrack2PosPx();
   var track2LengthPx = TrackCanvasInterface.getTrack2LengthPx();
@@ -44,7 +49,11 @@ document.querySelector('#pause1Button').onclick = function() {
  * because that's the track manager object we want to load the audio
  * information into.
  */
-AudioSourceInterface.loadBackendTrack(trackAudioManager);
+AudioSourceInterface.loadBackendTrack(
+  trackAudioManager, 'eyes.m4a');
+// Here, we load the second song
+AudioSourceInterface.loadBackendTrack(
+  trackAudioManager, '07-Littlewhiteboat.mp3');
 
 /**
  * Here we make a call to render the initial track canvas and set up the
