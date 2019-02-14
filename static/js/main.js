@@ -11,16 +11,19 @@ import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js'
  */
 var trackAudioManager = new TrackAudioManager();
 
+// NOTE: I have made a variable for track1 file name so we can always reference
+// it consistently
+var track1FileName = 'eyes.m4a';
+// same thing for track2
+var track1FileName = '07-Littlewhiteboat.mp3';
+
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
   // NOTE: we have hardcoded only one song in the TrackAudioManager. We need to
   // get both songs in there to play them at the same time.
 
-  // TODO!!!
-  // Call the new getTrackLengthMS function once you have implemented it and
-  // pass the name of song1 (eyes.m4a)
-  var track1LengthMS = trackAudioManager.getTrackLengthMS('eyes.m4a');
+  var track1LengthMS = trackAudioManager.getTrackLengthMS(track1FileName);
 
   var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
   var track2PosPx = TrackCanvasInterface.getTrack2PosPx();

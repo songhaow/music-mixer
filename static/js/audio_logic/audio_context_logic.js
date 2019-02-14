@@ -90,8 +90,6 @@ export class TrackAudioManager {
    *   songBufferInfo map object
    */
   getTrackLengthMS (songName) {
-    // TODO!!!
-
     // First get the audio buffer from this.songBufferInfo mapping dictionary
     // You can read this to understand dictionaries more:
     //   http://pietschsoft.com/post/2015/09/05/JavaScript-Basics-How-to-create-a-Dictionary-with-KeyValue-pairs
@@ -112,11 +110,96 @@ export class TrackAudioManager {
     return length;
   }
 
+  /**
+   * FIRST TODO: Fill out this method which is a more generic method of
+   * _resetTrackSource1. This method is for creating an Audio Buffer Source
+   * javascript object that will play music after it is given a song's contents.
+   *
+   * You can read about how the audio buffer source and web audio framework
+   * works here -- https://www.html5rocks.com/en/tutorials/webaudio/intro/
+   *
+   * Basically works with the following steps:
+   * 1. You create an Audio Buffer Source object with createBufferSource
+   * 2. You give it the song contents you want it to play (called the buffer)
+   * 3. You connect the Audio Buffer Source output to the output of the
+   *   AudioContext. The AudioContext is a global object in the WebAudio
+   *   library that plays music through your speakers.
+   * Once the above is done, you should be able to play music from the
+   * Audio Buffer Source to your computer speakers.
+   *
+   * For us:
+   * - The audio buffer is in the song information which can be looked up in
+   *   our song info dictionary: this.songBufferInfo
+   *
+   * YOUR TASK:
+   * Duplicate how _resetTrackSource1 is written to create and set a
+   * AudioBufferSource object and then save it on to the song information
+   * object
+   * Steps below
+   */
+  _resetTrackSource (songName) {
+    // 1. Get the song information dictionary by looking it up by songName in
+    // this.songBufferInfo
+    // Looking up the song looks something like the first line in
+    //   getTrackLengthMS
+
+    // 2. Create an Audio Buffer Source with the createBufferSource function
+    // In the old _resetTrackSource1 function, this was:
+    //     this.audioSource1 = audioCtx.createBufferSource();
+
+    // 3. Set the song's buffer contents from the song information dictionary
+    //    (step 1) on the audioSource object's buffer field
+    // In the old _resetTrackSource1 function, this was:
+    //     this.audioSource1.buffer = this.audioBuffer1;
+
+
+     // 4. Take the audio buffer source object created (step 2) and connect
+     //    it to the audioCtx destination
+     // In the old _resetTrackSource1 function, this was:
+     //    this.audioSource1.connect(audioCtx.destination);
+  }
+
+  /**
+   * SECOND TODO: Fill out this method so that we can play music for any given track
+   * @param {String} songName, name of the song which is the key into the
+   *   songBufferInfo map object
+   * @param {Number} playOffsetSec, Number of seconds into the track that we
+   *   want to play from.
+   */
+  playTrack (songName, playOffsetSec) {
+    /**
+     * DIRECTIONS:
+     * - Use playTrack1 method (further down in this file) as a guide
+     * - Then implement the steps listed below
+     */
+
+    // 1. Get the song information dictionary from this.songBufferInfo
+
+    // 2. The song info dict will have the following form:
+    //    {
+    //      'buffer': <some song data>,
+    //      'bpm': 95.23,
+    //      'audioSource': null,
+    //    },
+
+    // 3. Check if the audioSource attribute on the song information dict is
+    //    undefined.  If it's undefined, you need to call _resetTrackSource
+    //    with the songName
+
+    // 4. Call the start() function on the audioSource attribute of the song
+    //    info dict and the song shouls start playing.  start() has 2
+    //    arguments, the first is the delay to wait before playing (set this to
+    //    0) and the second is the offset into the song to start playing from
+    //    (this is playOffsetSec)
+    
+
+  }
+
+
   /*** OLD METHODS ***/
 
   /**
-   * Get track1 length in milliseconds based on the audio data in the
-   * audioBuffer that is loaded from the backend
+   * TODO: delete this entire method -- it's no longer used
    */
   getTrack1LengthMS() {
     if (this.audioBuffer1 === null) {
