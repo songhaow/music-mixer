@@ -1,6 +1,6 @@
 import {TimeUtil} from '/static/js/view/utils/time_util.js';
 
-var positionObj = {
+export const PositionObj = {
   track1Start:0, // track1 starting coordinate (track1 not move for now)
   track2Start:0, // track2 starting coordinate, changes with dragging
   playCursor: 0, // playcursor in global coordinate
@@ -8,6 +8,8 @@ var positionObj = {
   play2X:0,     // play2X = playCursor - track2Start
   play1Scale:1,
   play2Scale:1,
+  track1Length:0,
+  track2Length:0
 };
 
 export const TrackCanvasInterface = {
@@ -16,17 +18,19 @@ export const TrackCanvasInterface = {
     var trackInputInfoList =  [
       {
         id: 'track1',
-        color: 'red',
+        color: '#FF5722',
         backgroundcolor: '#F2D7D5',
-        fname: '/static/source_audio/01-SW-042017.txt',
+        fname: '/static/source_audio/02-SW-062018.txt',
       },
       {
         id: 'track2',
         color: 'green',
         backgroundcolor: '#D1F2EB',
-        fname: '/static/source_audio/05-SW-012018-Goldfather-SSL-01.txt',
+        fname: '/static/source_audio/07-Littlewhiteboat.txt',
       },
     ];
+
+  // console.log('xxx', trackInputInfoList[0].id);
 
     var svgWidth=1400;
     var svgHeight=365;
@@ -55,15 +59,19 @@ export const TrackCanvasInterface = {
     // We find the html element that has the track2 id (which is set by passing
     // the trackInputInfoList 'id' field down through the render functions) and
     // return it's length in pixels
-    return Number(d3.select('#track2').attr('width'));
+    var Track2LengthPx = Number(d3.select('#track2').attr('width'));
+    console.log('getTrack2LengthPx', Track2LengthPx);
+    // return Number(d3.select('#track2').attr('width'));
+    return Track2LengthPx;
   },
 
   getTrack2PosPx() {
-    return positionObj.track2Start;
+    return PositionObj.track2Start;
+    // return trackInputInfoList[1].startX;
   },
 
   getPlayCursorPosPx() {
-    return positionObj.playCursor;
+    return PositionObj.playCursor;
   }
 };
 
@@ -108,16 +116,16 @@ function bindEventHandlers(mainSvgEl, trackInputInfoList) {
   // attr because there should only be one cursor.
   var playCursorRect = mainSvgEl.select('#playCursorRect');
   mainSvgEl.on('mousedown', function() {
-    positionObj.playCursor = d3.event.offsetX;
-    playCursorRect.attr('destX', positionObj.playCursor);
+    PositionObj.playCursor = d3.event.offsetX;
+    playCursorRect.attr('destX', PositionObj.playCursor);
   });
   mainSvgEl.on('mouseup', function() {
-    positionObj.playCursor = playCursorRect.attr('destX');
-    playCursorRect.attr('x', positionObj.playCursor);
-    positionObj.play1X=(positionObj.playCursor-positionObj.track1Start)/positionObj.play1Scale;
-    positionObj.play2X=(positionObj.playCursor-positionObj.track2Start)/positionObj.play2Scale;
-    console.log('playCursor: ', positionObj.playCursor);
-    console.log('play1X, play2X: ', positionObj.play1X, positionObj.play2X);
+    PositionObj.playCursor = playCursorRect.attr('destX');
+    playCursorRect.attr('x', PositionObj.playCursor);
+    PositionObj.play1X=(PositionObj.playCursor-PositionObj.track1Start)/PositionObj.play1Scale;
+    PositionObj.play2X=(PositionObj.playCursor-PositionObj.track2Start)/PositionObj.play2Scale;
+    console.log('playCursor: ', PositionObj.playCursor);
+    // console.log('play1X, play2X: ', PositionObj.play1X, PositionObj.play2X);
   });
 
   // Zoom event handler bindings
@@ -133,6 +141,7 @@ function rerenderTracks(svg, trackInputInfoList) {
 
   var trackPaddingPx = 30;
   var trackHeightPx = 70;
+
   trackInputInfoList.forEach(function(trackInputInfo, i) {
     var htmlElementId = trackInputInfo.id;
     var fname = trackInputInfo.fname;
@@ -146,7 +155,7 @@ function rerenderTracks(svg, trackInputInfoList) {
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
     renderAllTrackInfo(
       htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
-      bckgdcolor, i, w);
+      bckgdcolor, i, w, trackInputInfoList);
   });
 }
 
@@ -160,7 +169,7 @@ function rerenderTracks(svg, trackInputInfoList) {
  * @param {String}    color: Color to render track in
  */
 function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
-  color, bckgdcolor, i, w){
+  color, bckgdcolor, i, w,trackInputInfoList){
     d3.json(fname, function(error, data) {
     var bpm01 = data.bpm;
     bpm01 = d3.format(".0f")(bpm01)
@@ -168,13 +177,20 @@ function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, 
     var xOffset = d3.min(beatListArray);
     var xMin = 0;
     var xMax = d3.max(beatListArray);
+    console.log('SongLength:', xMax);
     var axisScale = d3.scaleLinear()
                       .domain([xMin,xMax])
                       .range([0,w]);
     var xScale = w/xMax;
 
-    if (i==0){positionObj.play1Scale = xScale}
-    else{positionObj.play2Scale = xScale}
+    if (i==0){
+      PositionObj.play1Scale = xScale;
+      PositionObj.track1Length = xMax;
+    }
+    else{
+      PositionObj.play2Scale = xScale;
+      PositionObj.track2Length = xMax;
+    }
 
     var xStart = 0;
     var xAxis = d3.axisBottom().scale(axisScale);
@@ -190,7 +206,7 @@ function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, 
     trackDisplayGroup.append('text')
         .attr('x', 700)
         .attr('y', trackBottomY + 35)
-        .text('(Second)');
+        .text('(Seconds)');
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
@@ -280,10 +296,10 @@ function dragged() {
   );
 }
 
-function dragended() {
+function dragended(trackInputInfoList) {
   d3.select(this).classed("active", false);
-  positionObj.track2Start = positionObj.track2Start + (d3.event.x - d3.event.subject.x);
-  console.log('mouseDownX: ', d3.event.subject.x);
-  console.log('mouseUpX: ',d3.event.x);
-  console.table('track2Start-new:', positionObj.track2Start);
+  PositionObj.track2Start = PositionObj.track2Start + (d3.event.x - d3.event.subject.x);
+  // console.log('mouseDownX: ', d3.event.subject.x);
+  // console.log('mouseUpX: ',d3.event.x);
+  // console.table('track2Start-new:', PositionObj.track2Start);
 }

@@ -27,10 +27,10 @@ def handle_song():
     """
     As we discussed last time, the HTTP request that we get from javascript
     in the browser now has an extra parameter on it and will look like this:
-        localhost:8080/song?songName=eyes.m4a
+        localhost:8080/song?songName=01-SW-042017.mp3
     The ? in the URL is a character that marks the beginning of the 'query
     string' section.  After the ? there will be key / value pairs that represent
-    'variables' and their values.  'songName' is the key and 'eyes.m4a' is the
+    'variables' and their values.  'songName' is the key and '01-SW-042017.mp3' is the
     value.  Simple info about URL structure:
         http://www.ronstauffer.com/blog/understanding-a-url/
     """
@@ -48,5 +48,5 @@ def handle_song():
     return content
 
 if __name__ == '__main__':
-    app.run(port=8000)
+    app.run(port=8080)
     # """rb=> read bitwize; fp=> file pointer"""

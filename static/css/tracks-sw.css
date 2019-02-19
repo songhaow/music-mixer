@@ -16,7 +16,7 @@ line.xaxis {
 }
 
 .head{
-  background-color: red;
+  background-color: rgb(63,81,181);
   font-size: 24px;
   color: white;
   font-weight: bold;
@@ -32,21 +32,25 @@ line.xaxis {
 .divd3{
   /* margin-left: auto;
   margin-right: auto; */
-  margin-left:5px;
+  margin-left:10px;
 }
 
 .div02{
-  width: 1150px;
+  border-radius: 10px;
+  width: 1110px;
   margin-left: auto;
   margin-right: auto;
   font-size: 16px;
-  background-color: #eeeeee;
+  background-color: rgb(96,125,139);
 }
 
 .box{
+  border-radius: 5px;
   width: 500px;
-  margin: 5px;
-  padding: 20px;
+  margin: 10px;
+  padding-left: 30px;
+  padding-bottom: 5px;
+  padding-top: 5px;
   display: inline-block;
   vertical-align: top;
   background-color: white;
@@ -57,6 +61,12 @@ line.xaxis {
   background-color: #888888;
 } */
 
-input:hover{
+input:hover, button:hover{
+  border-radius: 5px;
+  background-color: #eeeeee;
+}
+
+audio:hover{
+  border-radius: 20px;
   background-color: #eeeeee;
 }

@@ -3,6 +3,7 @@
 import {AudioSourceInterface} from '/static/js/api/audio_source.js';
 import {TrackAudioManager}    from '/static/js/audio_logic/audio_context_logic.js';
 import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js';
+import {PositionObj} from '/static/js/view/track_canvas/main_render.js';
 
 /**
  * Here we create an instance of the class TrackAudioManager.  The track
@@ -10,38 +11,34 @@ import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js'
  * the functions to play, stop, and seek the track position.
  */
 var trackAudioManager = new TrackAudioManager();
+// NOTE: I have made a variable for track1 file name so we can always reference
+// it consistently
+var track1FileName = '02-SW-062018.mp3';
+var track2FileName = '07-Littlewhiteboat.mp3';
 
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
-  // NOTE: we have hardcoded only one song in the TrackAudioManager. We need to
-  // get both songs in there to play them at the same time.
-
-  // TODO!!!
-  // Call the new getTrackLengthMS function once you have implemented it and
-  // pass the name of song1 (eyes.m4a)
-  var track1LengthMS = trackAudioManager.getTrackLengthMS('eyes.m4a');
-
-  var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
-  var track2PosPx = TrackCanvasInterface.getTrack2PosPx();
-  var track2LengthPx = TrackCanvasInterface.getTrack2LengthPx();
-
-  var playCursorDeltaPx = playCursorPositionPx - track2PosPx;
-  if (playCursorDeltaPx < 0) {
-    playCursorDeltaPx = 0;
-  }
-  var track2PlayOffsetSeconds =
-    (playCursorDeltaPx / track2LengthPx) * track1LengthMS / 1000;
-
-  // console.log('offset seconds: ' + track2PlayOffsetSeconds);
-
-  trackAudioManager.playTrack1(track2PlayOffsetSeconds);
-};
+  trackAudioManager.playTrack(track1FileName,PositionObj.play1X);
+  console.log('Mainplay1X: ', PositionObj.play1X);
+ };
 
 document.querySelector('#pause1Button').onclick = function() {
-  trackAudioManager.stopTrack1();
-};
+   trackAudioManager.stopTrack(track1FileName);
+ };
 
+document.querySelector('#play2Button').onclick = function() {
+  var PlayOffset = PositionObj.play2X;
+  if ( PlayOffset< 0){
+    PlayOffset = 0;
+  }
+  trackAudioManager.playTrack(track2FileName, PlayOffset);
+  console.log('Mainplay2X: ', PlayOffset);
+  };
+
+document.querySelector('#pause2Button').onclick = function() {
+  trackAudioManager.stopTrack(track2FileName);
+};
 /**
  * Here, we make a call to the python flask server to get the track
  * audio information.  Once the audio information comes back and is
@@ -49,14 +46,31 @@ document.querySelector('#pause1Button').onclick = function() {
  * because that's the track manager object we want to load the audio
  * information into.
  */
-AudioSourceInterface.loadBackendTrack(
-  trackAudioManager, 'eyes.m4a');
+AudioSourceInterface.loadBackendTrack(trackAudioManager, track1FileName);
 // Here, we load the second song
-AudioSourceInterface.loadBackendTrack(
-  trackAudioManager, '07-Littlewhiteboat.mp3');
+AudioSourceInterface.loadBackendTrack(trackAudioManager, track2FileName);
 
 /**
  * Here we make a call to render the initial track canvas and set up the
  * UI interface
  */
 TrackCanvasInterface.initialRender();
+
+// These are one method to calculate the PlayOffset
+// NOTE: we have hardcoded only one song in the TrackAudioManager. We need to
+// get both songs in there to play them at the same time.
+// var track1LengthMS = trackAudioManager.getTrackLengthMS(track1FileName);
+// var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
+// var track2PosPx = TrackCanvasInterface.getTrack2PosPx();
+// var track2LengthPx = TrackCanvasInterface.getTrack2LengthPx();
+
+// var playCursorDeltaPx = playCursorPositionPx - track2PosPx;
+// if (playCursorDeltaPx < 0) {
+//   playCursorDeltaPx = 0;
+// }
+
+// var track2PlayOffsetSeconds =
+//   (playCursorDeltaPx / track2LengthPx) * track1LengthMS / 1000;
+//
+// console.log('offset seconds: ' + track2PlayOffsetSeconds);
+// trackAudioManager.playTrack1(track2PlayOffsetSeconds);
