@@ -49,28 +49,8 @@ document.querySelector('#pause2Button').onclick = function() {
 AudioSourceInterface.loadBackendTrack(trackAudioManager, track1FileName);
 // Here, we load the second song
 AudioSourceInterface.loadBackendTrack(trackAudioManager, track2FileName);
-
 /**
  * Here we make a call to render the initial track canvas and set up the
  * UI interface
  */
 TrackCanvasInterface.initialRender();
-
-// These are one method to calculate the PlayOffset
-// NOTE: we have hardcoded only one song in the TrackAudioManager. We need to
-// get both songs in there to play them at the same time.
-// var track1LengthMS = trackAudioManager.getTrackLengthMS(track1FileName);
-// var playCursorPositionPx = TrackCanvasInterface.getPlayCursorPosPx();
-// var track2PosPx = TrackCanvasInterface.getTrack2PosPx();
-// var track2LengthPx = TrackCanvasInterface.getTrack2LengthPx();
-
-// var playCursorDeltaPx = playCursorPositionPx - track2PosPx;
-// if (playCursorDeltaPx < 0) {
-//   playCursorDeltaPx = 0;
-// }
-
-// var track2PlayOffsetSeconds =
-//   (playCursorDeltaPx / track2LengthPx) * track1LengthMS / 1000;
-//
-// console.log('offset seconds: ' + track2PlayOffsetSeconds);
-// trackAudioManager.playTrack1(track2PlayOffsetSeconds);
