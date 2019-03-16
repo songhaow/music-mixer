@@ -38,6 +38,7 @@ export class TrackAudioManager {
   setTrackBuffer (songName, audioBuffer) {
     // first check if we have this song already
     var songInfo = this.songBufferInfo[songName];
+    console.log('songInfo: ', songInfo);
     if (!songInfo) {
       // If we haven't seen this song before, we want to "create an entry" for
       // it in our mapping object

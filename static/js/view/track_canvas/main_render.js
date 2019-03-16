@@ -13,41 +13,31 @@ export const PositionObj = {
 };
 
 export const TrackCanvasInterface = {
-  initialRender() {
-    // This is the original code to render the UI interface
+  initialRender(f1,f2) {
+
     var trackInputInfoList =  [
       {
         id: 'track1',
         color: '#FF5722',
         backgroundcolor: '#F2D7D5',
-        fname: '/static/source_audio/02-SW-062018.txt',
+        fname: f1
       },
       {
         id: 'track2',
         color: 'green',
         backgroundcolor: '#D1F2EB',
-        fname: '/static/source_audio/07-Littlewhiteboat.txt',
+        fname: f2
       },
     ];
 
-  // console.log('xxx', trackInputInfoList[0].id);
+ // change filenames from mp3 into txt
+ trackInputInfoList.forEach(function(trackInputInfo, i) {
+    var file1name = trackInputInfoList[i].fname;
+    var name=file1name.split(".")[0];
+    trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
+  });
 
-    var svgWidth=1400;
-    var svgHeight=365;
-
-    var svg = d3.select("#chartForTrack")
-                .append("svg")
-                .attr("width", svgWidth)
-                .attr("height", svgHeight);
-
-    var borderPath = svg.append("rect")
-                   			.attr("x", 0)
-                   			.attr("y", 0)
-                   			.attr("height", svgHeight)
-                   			.attr("width", svgWidth)
-                        .style("fill", "#eeeeee");
-
-    // console.log('svg-0: ', svg);
+    var svg = d3.select('svg');
 
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
@@ -56,18 +46,12 @@ export const TrackCanvasInterface = {
   },
 
   getTrack2LengthPx() {
-    // We find the html element that has the track2 id (which is set by passing
-    // the trackInputInfoList 'id' field down through the render functions) and
-    // return it's length in pixels
     var Track2LengthPx = Number(d3.select('#track2').attr('width'));
-    console.log('getTrack2LengthPx', Track2LengthPx);
-    // return Number(d3.select('#track2').attr('width'));
     return Track2LengthPx;
   },
 
   getTrack2PosPx() {
     return PositionObj.track2Start;
-    // return trackInputInfoList[1].startX;
   },
 
   getPlayCursorPosPx() {
@@ -125,7 +109,7 @@ function bindEventHandlers(mainSvgEl, trackInputInfoList) {
     PositionObj.play1X=(PositionObj.playCursor-PositionObj.track1Start)/PositionObj.play1Scale;
     PositionObj.play2X=(PositionObj.playCursor-PositionObj.track2Start)/PositionObj.play2Scale;
     console.log('playCursor: ', PositionObj.playCursor);
-    // console.log('play1X, play2X: ', PositionObj.play1X, PositionObj.play2X);
+    console.log('play1X, play2X: ', PositionObj.play1X, PositionObj.play2X);
   });
 
   // Zoom event handler bindings

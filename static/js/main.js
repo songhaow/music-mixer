@@ -1,7 +1,7 @@
 // Import commands allow us to import functions and modules from other
 // javascript files -- like we do in python
-import {AudioSourceInterface} from '/static/js/api/audio_source.js';
 import {TrackAudioManager}    from '/static/js/audio_logic/audio_context_logic.js';
+import {AudioSourceInterface} from '/static/js/api/audio_source.js';
 import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js';
 import {PositionObj} from '/static/js/view/track_canvas/main_render.js';
 
@@ -11,15 +11,35 @@ import {PositionObj} from '/static/js/view/track_canvas/main_render.js';
  * the functions to play, stop, and seek the track position.
  */
 var trackAudioManager = new TrackAudioManager();
-// NOTE: I have made a variable for track1 file name so we can always reference
-// it consistently
+
 var track1FileName = '02-SW-062018.mp3';
 var track2FileName = '07-Littlewhiteboat.mp3';
+// var track3FileName = '01-04-2017.mp3';
+
+document.getElementById("fname01").onchange = function(event) {
+    track1FileName = event.target.value;
+    var split = track1FileName.split('\\');
+    var length1 = split.length-1;
+    track1FileName = split[length1];
+    console.log('File name 1: ', track1FileName);
+    // AudioSourceInterface.loadBackendTrack(trackAudioManager, track1FileName);
+    TrackCanvasInterface.initialRender(track1FileName,track2FileName);
+  }
+
+document.getElementById("fname02").onchange = function(event) {
+      track2FileName = event.target.value;
+      var split = track2FileName.split("\\");
+      var length2 = split.length-1;
+      track2FileName = split[length2];
+      console.log('File name 2: ', track2FileName);
+      // AudioSourceInterface.loadBackendTrack(trackAudioManager, track2FileName);
+      TrackCanvasInterface.initialRender(track1FileName,track2FileName);
+  }
 
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
-  trackAudioManager.playTrack(track1FileName,PositionObj.play1X);
+  trackAudioManager.playTrack(track1FileName, PositionObj.play1X);
   console.log('Mainplay1X: ', PositionObj.play1X);
  };
 
@@ -47,10 +67,9 @@ document.querySelector('#pause2Button').onclick = function() {
  * information into.
  */
 AudioSourceInterface.loadBackendTrack(trackAudioManager, track1FileName);
-// Here, we load the second song
 AudioSourceInterface.loadBackendTrack(trackAudioManager, track2FileName);
 /**
  * Here we make a call to render the initial track canvas and set up the
  * UI interface
  */
-TrackCanvasInterface.initialRender();
+TrackCanvasInterface.initialRender(track1FileName,track2FileName);

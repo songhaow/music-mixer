@@ -12,7 +12,6 @@ app = Flask(__name__, template_folder=TEMPLATES_FOLDER)
 # all websites domains to access content on this server
 CORS(app)
 
-
 @app.route('/')
 def hello():
     return render_template('index.html')
@@ -48,5 +47,5 @@ def handle_song():
     return content
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run(port=8000)
     # """rb=> read bitwize; fp=> file pointer"""

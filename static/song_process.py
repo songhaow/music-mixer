@@ -10,7 +10,6 @@ from aubio import source, tempo
 from numpy import median, diff
 
 DATA_FOLDER = 'source_audio'
-
 # ---------------------------------------
 def get_all_song_keys(all_song_keys):
 

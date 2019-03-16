@@ -1,10 +1,18 @@
 html, body{
   /* margin: 10px; */
   height: 100%;
-  font-size: 16px;
+  font-size: 14px;
   font-family: serif;
   /* color: red; */
   /* background-color: #eeeeee; */
+}
+.head{
+  background-color: rgb(63,81,181);
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px;
 }
 line {
   stroke: green;
@@ -13,15 +21,6 @@ line {
 line.xaxis {
   stroke: yellow;
   stroke-width: 8px;
-}
-
-.head{
-  background-color: rgb(63,81,181);
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  padding: 5px;
 }
 
 .div01{
@@ -38,9 +37,9 @@ line.xaxis {
 .div02{
   border-radius: 10px;
   width: 1110px;
+  /* height: 150px; */
   margin-left: auto;
   margin-right: auto;
-  font-size: 16px;
   background-color: rgb(96,125,139);
 }
 
@@ -54,7 +53,7 @@ line.xaxis {
   display: inline-block;
   vertical-align: top;
   background-color: white;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 /* fname01 input{
@@ -63,10 +62,31 @@ line.xaxis {
 
 input:hover, button:hover{
   border-radius: 5px;
-  background-color: #eeeeee;
+  background-color: #FFF8DC;
 }
 
 audio:hover{
   border-radius: 20px;
-  background-color: #eeeeee;
+  background-color: #ffffff;
+}
+
+#play1Button{
+  font-family: serif;
+  font-size: 18px;
+  color: red;
+}
+#pause1Button{
+  font-family: serif;
+  font-size: 18px;
+  color: brown;
+}
+#play2Button{
+  font-family: serif;
+  font-size: 18px;
+  color: green;
+}
+#pause2Button{
+  font-family: serif;
+  font-size: 18px;
+  color: darkgreen;
 }
