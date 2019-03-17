@@ -32,8 +32,8 @@ export class TrackAudioManager {
          'bpm': 123.32,
          'audioSource': null,
        },
-   }
-}
+     }
+  }
 
   setTrackBuffer (songName, audioBuffer) {
     // first check if we have this song already
@@ -55,7 +55,7 @@ export class TrackAudioManager {
     this.songBufferInfo[songName]['audioSource'].connect(audioCtx.destination);
   }
 
-  playTrack (songName, playOffsetSec) {
+  playTrack (songName, playOffsetSec, duration) {
     if (this.songBufferInfo[songName]['audioSource'] === null) {
       // Here, we set the audioSource if it has not been created yet
       // var songNamei = this.songBufferInfo;
@@ -66,12 +66,22 @@ export class TrackAudioManager {
     if (typeof(playOffsetSec) === 'undefined') {
       playOffsetSec = 0;
     }
-    this.songBufferInfo[songName]['audioSource'].start(0, playOffsetSec);
+    this.songBufferInfo[songName]['audioSource'].start(0, playOffsetSec, duration);
   }
 
   stopTrack (songName) {
     this.songBufferInfo[songName]['audioSource'].stop();
     this._resetTrackSource(songName);
+  }
+
+  playMixTrack (songName, playOffsetSec, duration) {
+    if (this.songBufferInfo[songName]['audioSource'] === null) {
+      this._resetTrackSource(songName);
+    }
+    if (typeof(playOffsetSec) === 'undefined') {
+      playOffsetSec = 0;
+    }
+    this.songBufferInfo[songName]['audioSource'].start(0, playOffsetSec, duration);
   }
 
 };

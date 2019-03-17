@@ -59,6 +59,21 @@ document.querySelector('#play2Button').onclick = function() {
 document.querySelector('#pause2Button').onclick = function() {
   trackAudioManager.stopTrack(track2FileName);
 };
+
+document.querySelector('#playMixButton').onclick = function() {
+  trackAudioManager.playMixTrack(track1FileName,0,PositionObj.play1X);
+  var wait = 1000*PositionObj.play1X;
+  setTimeout(playTrack2, wait);
+   function playTrack2(){
+     trackAudioManager.playTrack(track2FileName,PositionObj.play2X);
+   }
+};
+
+document.querySelector('#pauseMixButton').onclick = function() {
+  trackAudioManager.stopTrack(track1FileName);
+  trackAudioManager.stopTrack(track2FileName);
+}
+
 /**
  * Here, we make a call to the python flask server to get the track
  * audio information.  Once the audio information comes back and is

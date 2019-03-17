@@ -45,7 +45,7 @@ line.xaxis {
 
 .box{
   border-radius: 5px;
-  width: 500px;
+  width: 300px;
   margin: 10px;
   padding-left: 30px;
   padding-bottom: 5px;
@@ -89,4 +89,9 @@ audio:hover{
   font-family: serif;
   font-size: 18px;
   color: darkgreen;
+}
+#playMixButton, #pauseMixButton{
+  font-family: serif;
+  font-size: 18px;
+  color: blue;
 }
