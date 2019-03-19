@@ -9,42 +9,40 @@
   </head>
 
   <body>
-    <div class = "head">Music-Mixer</div>
+   <div class = 'box00' >
+      <div class = "head" title="Music mixer">Music - Mixer</div>
 
-    <div class = "div01">
+      <div class = "div01">
       <!-- <div class = "divd3" id="chartForTrack"></div> -->
-      <svg width="1400" height="365" style="border: 1px solid black;">
-      </svg>
-    </div>
-
-    <hr>
-
-    <div class = "div02">
-      <div class = "box">
-        <button id='play1Button'> Mix Play track1 </button>
-        <button id='pause1Button'> Pause track1 </button>
+        <svg width="1400" height="365" style="border: 1px solid black;" padding = "10px"></svg>
       </div>
-      <div class = "box">
-        <button id='play2Button'> Mix Play track2 </button>
-        <button id='pause2Button'> Pause track2 </button>
-      </div>
-      <div class = "box">
-        <button id='playMixButton'>Mix Play</button>
-        <button id='pauseMixButton'>Pause Mix Play</button>
-      </div>
-    </div>
 
-    <div class = "div02">
+      <hr>
+
+      <div class = "div02">
         <div class = "box">
-            <p>Load Song1:</p>
-            <input id = "fname01" type="file" accept=".mp3"></input>
+          <button id='play1Button' title="Play track1"> Play track1 </button>
+          <button id='pause1Button' title="Pause track1"> Pause track1 </button>
         </div>
         <div class = "box">
-            <p>Load Song2:</p>
-            <input id = "fname02" type="file" accept=".mp3"></input>
+          <button id='play2Button'> Play track2 </button>
+          <button id='pause2Button'> Pause track2 </button>
         </div>
+        <div class = "box">
+          <button id='playMixButton'>Mix Play</button>
+          <button id='pauseMixButton'>Pause Mix Play</button>
+        </div>
+      </div>
+      <br>
+      <div class = "div02">
+          <div class = "box1">
+            Input01: <input id = "fname01" type="file" accept=".mp3"></input>
+          </div>
+          <div class = "box1">
+            Input02: <input id = "fname02" type="file" accept=".mp3"></input>
+          </div>
+      </div>
     </div>
-
     <!-- <div class = "div02">
       <div class = "box">
         <h5>Regular play Song1: 02-SW-062018.mp3</h5>

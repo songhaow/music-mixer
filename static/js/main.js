@@ -14,7 +14,6 @@ var trackAudioManager = new TrackAudioManager();
 
 var track1FileName = '02-SW-062018.mp3';
 var track2FileName = '07-Littlewhiteboat.mp3';
-// var track3FileName = '01-04-2017.mp3';
 
 document.getElementById("fname01").onchange = function(event) {
     track1FileName = event.target.value;
@@ -22,7 +21,6 @@ document.getElementById("fname01").onchange = function(event) {
     var length1 = split.length-1;
     track1FileName = split[length1];
     console.log('File name 1: ', track1FileName);
-    // AudioSourceInterface.loadBackendTrack(trackAudioManager, track1FileName);
     TrackCanvasInterface.initialRender(track1FileName,track2FileName);
   }
 
@@ -32,7 +30,6 @@ document.getElementById("fname02").onchange = function(event) {
       var length2 = split.length-1;
       track2FileName = split[length2];
       console.log('File name 2: ', track2FileName);
-      // AudioSourceInterface.loadBackendTrack(trackAudioManager, track2FileName);
       TrackCanvasInterface.initialRender(track1FileName,track2FileName);
   }
 
@@ -62,11 +59,11 @@ document.querySelector('#pause2Button').onclick = function() {
 
 document.querySelector('#playMixButton').onclick = function() {
   trackAudioManager.playMixTrack(track1FileName,0,PositionObj.play1X);
-  var wait = 1000*PositionObj.play1X;
-  setTimeout(playTrack2, wait);
-   function playTrack2(){
-     trackAudioManager.playTrack(track2FileName,PositionObj.play2X);
-   }
+  var waitTrack2 = 1000*PositionObj.play1X;
+  setTimeout(playTrack2, waitTrack2);
+  function playTrack2(){
+    trackAudioManager.playTrack(track2FileName,PositionObj.play2X);
+  }
 };
 
 document.querySelector('#pauseMixButton').onclick = function() {

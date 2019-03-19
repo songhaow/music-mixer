@@ -179,6 +179,13 @@ function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, 
     var xStart = 0;
     var xAxis = d3.axisBottom().scale(axisScale);
 
+// change .txt to .mp3
+    var split = fname.split('/');
+    var length1 = split.length-1;
+    var fnameTxt = split[length1];
+    var split = fnameTxt.split('.');
+    var fnameTxt = split[0] + '.mp3';
+
     var j=i+1;
     var tString = TimeUtil.secondsToTimeString(xMax);
     trackDisplayGroup.append('text')
@@ -186,7 +193,7 @@ function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, 
         .attr('y', trackTopY - 8)
         .style('font-size', '16px')
         .style('font-weight', 'bold')
-        .text('Song'+j+':  '+ fname + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
+        .text('Track'+j+':  '+ fnameTxt + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
     trackDisplayGroup.append('text')
         .attr('x', 700)
         .attr('y', trackBottomY + 35)

@@ -7,12 +7,13 @@ html, body{
   /* background-color: #eeeeee; */
 }
 .head{
-  background-color: rgb(63,81,181);
+  /* background-color: rgb(63,81,181); */
+  background-color: rgb(0,8,0);
   font-size: 24px;
   color: white;
   font-weight: bold;
   text-align: center;
-  padding: 5px;
+  padding: 15px;
 }
 line {
   stroke: green;
@@ -23,21 +24,30 @@ line.xaxis {
   stroke-width: 8px;
 }
 
+.box00{
+  background-color: #eeeeee;
+}
+
 .div01{
+  padding: 10px;
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 
 .divd3{
+  padding: 10px;
+  text-align: center;
   /* margin-left: auto;
   margin-right: auto; */
   margin-left:10px;
 }
 
 .div02{
+  padding: 10px;
+  text-align: center;
   border-radius: 10px;
   width: 1110px;
-  /* height: 150px; */
   margin-left: auto;
   margin-right: auto;
   background-color: rgb(96,125,139);
@@ -45,7 +55,7 @@ line.xaxis {
 
 .box{
   border-radius: 5px;
-  width: 300px;
+  width: 310px;
   margin: 10px;
   padding-left: 30px;
   padding-bottom: 5px;
@@ -56,9 +66,18 @@ line.xaxis {
   font-size: 18px;
 }
 
-/* fname01 input{
-  background-color: #888888;
-} */
+.box1{
+  border-radius: 5px;
+  width: 500px;
+  margin: 10px;
+  padding-left: 30px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  display: inline-block;
+  vertical-align: top;
+  background-color: white;
+  font-size: 18px;
+}
 
 input:hover, button:hover{
   border-radius: 5px;
@@ -94,4 +113,9 @@ audio:hover{
   font-family: serif;
   font-size: 18px;
   color: blue;
+}
+#fname01,#fname02{
+  font-family: serif;
+  font-size: 18px;
+  color: black;
 }
