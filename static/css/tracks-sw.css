@@ -1,13 +1,9 @@
 html, body{
-  /* margin: 10px; */
   height: 100%;
   font-size: 14px;
   font-family: serif;
-  /* color: red; */
-  /* background-color: #eeeeee; */
 }
 .head{
-  /* background-color: rgb(63,81,181); */
   background-color: rgb(0,60,60);
   font-size: 24px;
   color: white;
@@ -44,21 +40,7 @@ line.xaxis {
   margin-right: auto;
   background-color: rgb(50,100,120);
   margin-bottom: 5px;
-  /* padding-bottom: 20px; */
 }
-
-/* .grid-container {
-  border-radius: 10px;
-  width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  display: grid;
-  grid-template-columns: auto 280px 280px 280px;
-  grid-gap: 5px;
-  background-color: rgb(96,125,139);
-  padding: 5px;
-} */
 
 .playbox{
   border-radius: 5px;
@@ -69,20 +51,14 @@ line.xaxis {
   padding-top: 5px;
   display: inline-block;
   vertical-align: top;
-  background-color: #eeeeee;
+  background: linear-gradient(white, rgb(50,50,50));
   font-size: 20px;
 }
 
 .myImg{
   border-radius: 5px;
-  /* margin: 5px; */
-  /* padding-left: 5px; */
-  padding-bottom: 1px;
-  padding-top: 1px;
-  /* display: inline-block; */
-  /* vertical-align: top; */
-  background-color: white;
-  /* font-size: 18px; */
+  padding-top: 5px;
+  background: linear-gradient( white,rgb(50,50,50));
 }
 
 .inputbox{
@@ -94,14 +70,13 @@ line.xaxis {
   padding-top: 5px;
   display: inline-block;
   vertical-align: top;
-  background-color: white;
+  background: linear-gradient(white, rgb(50,50,50));
   font-size: 20px;
 }
 
 input:hover, button:hover{
   border-radius: 5px;
-  /* background-color: #FFF8DC; */
-  background-color: lightgreen;
+  background-color: rgb(150,150,150);
 }
 
 audio:hover{
@@ -109,32 +84,21 @@ audio:hover{
   background-color: #ffffff;
 }
 
-#play1Button{
+#play1Button,#play2Button,#playMixButton {
+  border-radius: 5px;
   font-family: serif;
   font-size: 20px;
   color: red;
 }
-#pause1Button{
+#pause1Button, #pause2Button,#pauseMixButton{
+  border-radius: 5px;
   font-family: serif;
   font-size: 20px;
   color: brown;
 }
-#play2Button{
-  font-family: serif;
-  font-size: 20px;
-  color: green;
-}
-#pause2Button{
-  font-family: serif;
-  font-size: 20px;
-  color: darkgreen;
-}
-#playMixButton, #pauseMixButton{
-  font-family: serif;
-  font-size: 20px;
-  color: blue;
-}
+
 #fname01,#fname02{
+  border-radius: 5px;
   font-family: serif;
   font-size: 20px;
   color: black;

@@ -193,7 +193,7 @@ function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, 
         .attr('y', trackTopY - 8)
         .style('font-size', '16px')
         .style('font-weight', 'bold')
-        .text('Track'+j+':  '+ fnameTxt + ';  Duration = ' + tString + '[minutes];  bpm'+j+'=' +bpm01 );
+        .text('Track'+j+':  '+ fnameTxt + ';  Duration = ' + tString + '[minutes];  bpm = ' +bpm01 );
     trackDisplayGroup.append('text')
         .attr('x', 700)
         .attr('y', trackBottomY + 35)
