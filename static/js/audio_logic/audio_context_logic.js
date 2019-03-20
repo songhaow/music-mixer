@@ -5,6 +5,13 @@ export const audioCtx = new AudioContext();
 // trackNode.connect(audioCtx.destination);
 var audioSource = null;
 
+//The following are 4 lines to get the dataArray in TimeDomain
+//const AudioCtx = window.AudioContext || window.webkitAudioContext;
+// var waveAnalyser = audioCtx.CreateAnalyser();
+// waveAnalyser.fftSize = 2048;
+// waveAnalyser.getByteTimeDomainData(dataArray);
+
+
 // todo: refactor to track audio manager file
 /**
  * The TrackAudioManager is a class that helps us organize each song and its

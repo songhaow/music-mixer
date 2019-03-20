@@ -4,45 +4,65 @@
   <head>
     <meta charset="utf-8utf-8">
     <title>songtrack_backend.js</title>
+
+    <style>
+      .grid-container {
+        border-radius: 10px;
+        width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        display: grid;
+        grid-template-columns: auto 280px 280px 280px;
+        grid-gap: 5px;
+        background-color: rgb(96,125,139);
+        padding: 5px;
+      }
+    </style>
+
     <link rel="stylesheet" type="text/css" href="static/css/tracks-sw.css">
     <script type="text/javascript" src="static/js/vendor/d3.v4.js"></script>
+    <div class = "head" title="Music mixer">Music - Mixer</div>
   </head>
 
   <body>
-   <div class = 'box00' >
-      <div class = "head" title="Music mixer">Music - Mixer</div>
 
+    <div class = 'box00' >
       <div class = "div01">
-      <!-- <div class = "divd3" id="chartForTrack"></div> -->
-        <svg width="1400" height="365" style="border: 1px solid black;" padding = "10px"></svg>
+        <!-- <div class = "divd3" id="chartForTrack"></div> -->
+        <svg width="1360" height="365" style="border: 1px solid black;" padding = "10px" margin = '10px'></svg>
       </div>
-
       <hr>
 
-      <div class = "div02">
-        <div class = "box">
+      <div class="grid-container">
+        <div class="myImg">
+          <img id="myImg" src="static/music-04.jpg" height="40">
+        </div>
+        <div class = "playbox">
           <button id='play1Button' title="Play track1"> Play track1 </button>
           <button id='pause1Button' title="Pause track1"> Pause track1 </button>
         </div>
-        <div class = "box">
+        <div class = "playbox">
           <button id='play2Button'> Play track2 </button>
           <button id='pause2Button'> Pause track2 </button>
         </div>
-        <div class = "box">
+        <div class = "playbox">
           <button id='playMixButton'>Mix Play</button>
           <button id='pauseMixButton'>Pause Mix Play</button>
         </div>
       </div>
       <br>
-      <div class = "div02">
-          <div class = "box1">
-            Input01: <input id = "fname01" type="file" accept=".mp3"></input>
+      <div class = "div03">
+          <div class = "inputbox">
+            Load track01: <input id = "fname01" type="file" accept=".mp3"></input>
           </div>
-          <div class = "box1">
-            Input02: <input id = "fname02" type="file" accept=".mp3"></input>
+          <div class = "inputbox">
+            Load track2: <input id = "fname02" type="file" accept=".mp3"></input>
           </div>
       </div>
+
     </div>
+
     <!-- <div class = "div02">
       <div class = "box">
         <h5>Regular play Song1: 02-SW-062018.mp3</h5>

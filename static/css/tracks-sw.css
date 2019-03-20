@@ -8,7 +8,7 @@ html, body{
 }
 .head{
   /* background-color: rgb(63,81,181); */
-  background-color: rgb(0,8,0);
+  background-color: rgb(0,60,60);
   font-size: 24px;
   color: white;
   font-weight: bold;
@@ -25,63 +25,83 @@ line.xaxis {
 }
 
 .box00{
-  background-color: #eeeeee;
+  background: linear-gradient(white, rgb(10,10,10));
 }
 
 .div01{
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 
-.divd3{
-  padding: 10px;
-  text-align: center;
-  /* margin-left: auto;
-  margin-right: auto; */
-  margin-left:10px;
-}
-
-.div02{
-  padding: 10px;
+.div03{
+  padding: 5px;
   text-align: center;
   border-radius: 10px;
-  width: 1110px;
+  width: 1100px;
   margin-left: auto;
   margin-right: auto;
-  background-color: rgb(96,125,139);
+  background-color: rgb(50,100,120);
+  margin-bottom: 5px;
+  /* padding-bottom: 20px; */
 }
 
-.box{
+/* .grid-container {
+  border-radius: 10px;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  display: grid;
+  grid-template-columns: auto 280px 280px 280px;
+  grid-gap: 5px;
+  background-color: rgb(96,125,139);
+  padding: 5px;
+} */
+
+.playbox{
   border-radius: 5px;
-  width: 310px;
-  margin: 10px;
-  padding-left: 30px;
+  width: 250px;
+  margin: 5px;
+  padding-left: 10px;
   padding-bottom: 5px;
   padding-top: 5px;
   display: inline-block;
   vertical-align: top;
-  background-color: white;
-  font-size: 18px;
+  background-color: #eeeeee;
+  font-size: 20px;
 }
 
-.box1{
+.myImg{
+  border-radius: 5px;
+  /* margin: 5px; */
+  /* padding-left: 5px; */
+  padding-bottom: 1px;
+  padding-top: 1px;
+  /* display: inline-block; */
+  /* vertical-align: top; */
+  background-color: white;
+  /* font-size: 18px; */
+}
+
+.inputbox{
   border-radius: 5px;
   width: 500px;
-  margin: 10px;
+  margin: 5px;
   padding-left: 30px;
   padding-bottom: 5px;
   padding-top: 5px;
   display: inline-block;
   vertical-align: top;
   background-color: white;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 input:hover, button:hover{
   border-radius: 5px;
-  background-color: #FFF8DC;
+  /* background-color: #FFF8DC; */
+  background-color: lightgreen;
 }
 
 audio:hover{
@@ -91,31 +111,31 @@ audio:hover{
 
 #play1Button{
   font-family: serif;
-  font-size: 18px;
+  font-size: 20px;
   color: red;
 }
 #pause1Button{
   font-family: serif;
-  font-size: 18px;
+  font-size: 20px;
   color: brown;
 }
 #play2Button{
   font-family: serif;
-  font-size: 18px;
+  font-size: 20px;
   color: green;
 }
 #pause2Button{
   font-family: serif;
-  font-size: 18px;
+  font-size: 20px;
   color: darkgreen;
 }
 #playMixButton, #pauseMixButton{
   font-family: serif;
-  font-size: 18px;
+  font-size: 20px;
   color: blue;
 }
 #fname01,#fname02{
   font-family: serif;
-  font-size: 18px;
+  font-size: 20px;
   color: black;
 }
