@@ -30,12 +30,12 @@ export const TrackCanvasInterface = {
       },
     ];
 
- // change filenames from mp3 into txt
- trackInputInfoList.forEach(function(trackInputInfo, i) {
-    var file1name = trackInputInfoList[i].fname;
-    var name=file1name.split(".")[0];
-    trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
-  });
+    // change filenames from mp3 into txt
+    trackInputInfoList.forEach(function(trackInputInfo, i) {
+      var file1name = trackInputInfoList[i].fname;
+      var name=file1name.split(".")[0];
+      trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
+    });
 
     var svg = d3.select('svg');
 

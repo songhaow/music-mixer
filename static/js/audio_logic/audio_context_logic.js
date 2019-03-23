@@ -39,11 +39,33 @@ export class TrackAudioManager {
          'bpm': 123.32,
          'audioSource': null,
        },
-     }
+     };
+
+     // 7. To begin tracking song1 name and song2 name, we simply create
+     // 2 variables here
+     this.track1Name = '02-SW-062018.mp3';
+     this.track2Name = '07-Littlewhiteboat.mp3';
+  }
+
+  // 8. We have to create 2 functions that allow us to change
+  // track1 and track2 names whenever we want to do so (i.e.
+  // when we load a new song)
+  setTrack1Name (track1Name) {
+    // You need to fill this section out.  It is a simple 1 line command.
+  }
+  // 8. Same thing for track 2
+  setTrack2Name (track1Name) {
+    // You need to fill this section out.  It is a simple 1 line command.
   }
 
   setTrackBuffer (songName, audioBuffer) {
     // first check if we have this song already
+
+    // 3. setTrackBuffer updates this.songBufferInfo here with the new song
+    // information. You can read the logic below which says "if there is
+    // no" info about the song in the object, create a new space for it.
+    // this.songBufferInfo starts with 2 songs and their info hard coded
+    // into it. Here, we add a 3rd (or 4th or Nth) song info.
     var songInfo = this.songBufferInfo[songName];
     console.log('songInfo: ', songInfo);
     if (!songInfo) {
@@ -53,6 +75,7 @@ export class TrackAudioManager {
     }
     // now we know there is a mapping for our song, so we can set the audio
     // buffer with the right data
+    // 4. Once the buffer is set, the song is playable.
     this.songBufferInfo[songName]['buffer'] = audioBuffer;
   }
 
