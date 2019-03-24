@@ -39,7 +39,27 @@ export class TrackAudioManager {
          'bpm': 123.32,
          'audioSource': null,
        },
-     }
+     };
+
+     // 7. To begin tracking song1 name and song2 name, we simply create
+     // two variables here
+     this.track1Name = '02-SW-062018.mp3';
+     this.track2Name = '07-Littlewhiteboat.mp3';
+  }
+
+   // 8. We have to create 2 functions that allow us to change
+  // track1 and track2 names whenever we want to do so (i.e.
+  // when we load a new song)
+  setTrack1Name(track1Name) {
+    // You need to fill this section out.  It is a simple 1 line command.
+    this.track1Name = track1Name;
+    console.log('Newtrack1Name: ', this.track1Name);
+  }
+  // 8. Same thing for track 2
+  setTrack2Name(track2Name) {
+    // You need to fill this section out.  It is a simple 1 line command.
+    this.track2Name = track2Name;
+    console.log('Newtrack2Name: ', this.track2Name);
   }
 
   setTrackBuffer (songName, audioBuffer) {

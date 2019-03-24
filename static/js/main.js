@@ -12,36 +12,41 @@ import {PositionObj} from '/static/js/view/track_canvas/main_render.js';
  */
 var trackAudioManager = new TrackAudioManager();
 
-var track1FileName = '02-SW-062018.mp3';
-var track2FileName = '07-Littlewhiteboat.mp3';
-
 document.getElementById("fname01").onchange = function(event) {
-    track1FileName = event.target.value;
-    var split = track1FileName.split('\\');
+    var tempFileName = event.target.value;
+    var split = tempFileName.split('\\');
     var length1 = split.length-1;
-    track1FileName = split[length1];
-    console.log('File name 1: ', track1FileName);
-    TrackCanvasInterface.initialRender(track1FileName,track2FileName);
+    tempFileName = split[length1];
+    trackAudioManager.setTrack1Name(tempFileName);
+    AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track1Name);
+    TrackCanvasInterface.initialRender(trackAudioManager.track1Name,trackAudioManager.track2Name);
+    console.log('File name 1: ', tempFileName);
+    console.log('File name 1: ', trackAudioManager.track1Name);
+    console.log('File name 2: ', trackAudioManager.track2Name);
   }
 
 document.getElementById("fname02").onchange = function(event) {
-      track2FileName = event.target.value;
-      var split = track2FileName.split("\\");
+      var tempFileName = event.target.value;
+      var split = tempFileName.split("\\");
       var length2 = split.length-1;
-      track2FileName = split[length2];
-      console.log('File name 2: ', track2FileName);
-      TrackCanvasInterface.initialRender(track1FileName,track2FileName);
+      tempFileName = split[length2];
+      trackAudioManager.setTrack2Name(tempFileName);
+      AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track2Name);
+      TrackCanvasInterface.initialRender(trackAudioManager.track1Name,trackAudioManager.track2Name);
+      console.log('File name 2: ', tempFileName);
+      console.log('File name 2: ', trackAudioManager.track2Name);
+      console.log('File name 1: ', trackAudioManager.track1Name);
   }
 
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
-  trackAudioManager.playTrack(track1FileName, PositionObj.play1X);
-  console.log('Mainplay1X: ', PositionObj.play1X);
+  trackAudioManager.playTrack(trackAudioManager.track1Name, PositionObj.play1X);
+  // console.log('Mainplay1X: ', PositionObj.play1X);
  };
 
 document.querySelector('#pause1Button').onclick = function() {
-   trackAudioManager.stopTrack(track1FileName);
+   trackAudioManager.stopTrack(trackAudioManager.track1Name);
  };
 
 document.querySelector('#play2Button').onclick = function() {
@@ -49,26 +54,26 @@ document.querySelector('#play2Button').onclick = function() {
   if ( PlayOffset< 0){
     PlayOffset = 0;
   }
-  trackAudioManager.playTrack(track2FileName, PlayOffset);
-  console.log('Mainplay2X: ', PlayOffset);
+  trackAudioManager.playTrack(trackAudioManager.track2Name, PlayOffset);
+  // console.log('Mainplay2X: ', PlayOffset);
   };
 
 document.querySelector('#pause2Button').onclick = function() {
-  trackAudioManager.stopTrack(track2FileName);
+  trackAudioManager.stopTrack(trackAudioManager.track2Name);
 };
 
 document.querySelector('#playMixButton').onclick = function() {
-  trackAudioManager.playMixTrack(track1FileName,0,PositionObj.play1X);
+  trackAudioManager.playMixTrack(trackAudioManager.track1Name,0,PositionObj.play1X);
   var waitTrack2 = 1000*PositionObj.play1X;
   setTimeout(playTrack2, waitTrack2);
   function playTrack2(){
-    trackAudioManager.playTrack(track2FileName,PositionObj.play2X);
+    trackAudioManager.playTrack(trackAudioManager.track2Name,PositionObj.play2X);
   }
 };
 
 document.querySelector('#pauseMixButton').onclick = function() {
-  trackAudioManager.stopTrack(track1FileName);
-  trackAudioManager.stopTrack(track2FileName);
+  trackAudioManager.stopTrack(trackAudioManager.track1Name);
+  trackAudioManager.stopTrack(trackAudioManager.track2Name);
 }
 
 /**
@@ -78,10 +83,10 @@ document.querySelector('#pauseMixButton').onclick = function() {
  * because that's the track manager object we want to load the audio
  * information into.
  */
-AudioSourceInterface.loadBackendTrack(trackAudioManager, track1FileName);
-AudioSourceInterface.loadBackendTrack(trackAudioManager, track2FileName);
+AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track1Name);
+AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track2Name);
 /**
  * Here we make a call to render the initial track canvas and set up the
  * UI interface
  */
-TrackCanvasInterface.initialRender(track1FileName,track2FileName);
+TrackCanvasInterface.initialRender(trackAudioManager.track1Name,trackAudioManager.track2Name);

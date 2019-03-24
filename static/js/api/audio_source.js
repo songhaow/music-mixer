@@ -6,22 +6,22 @@ export const AudioSourceInterface = {
     var xhr = new XMLHttpRequest();
 
     // GET the song from the backend python server
-    xhr.open('GET', 'http://localhost:8000/song?songName=' + songName, true);
+    xhr.open('GET', 'http://localhost:8080/song?songName=' + songName, true);
 
     xhr.responseType = 'arraybuffer';
     xhr.onload = function () {
-      console.log('> backend track loaded, decoding...');
+      // console.log('> backend track loaded, decoding...');
       audioCtx.decodeAudioData(xhr.response).then(
         audioBuffer => {
           // setTrackBuffer function by passing in the songName so that we know what song to set the
           // audioBuffer for.
           trackAudioManager.setTrackBuffer(songName, audioBuffer);
-          console.log('> backend track decoded and buffer set');
+          // console.log('> backend track decoded and buffer set');
         }
       )
     };
-    console.log('audioCtx...', audioCtx);
-    console.log('Loading backend track...');
+    // console.log('audioCtx...', audioCtx);
+    // console.log('Loading backend track...');
     xhr.send();
   }
 };
