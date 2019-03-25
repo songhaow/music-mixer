@@ -1,6 +1,9 @@
 // todo: don't export audioCtx directly
 import {audioCtx, TrackAudioManager} from '/static/js/audio_logic/audio_context_logic.js';
 
+
+// AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track2Name);
+
 export const AudioSourceInterface = {
   loadBackendTrack(trackAudioManager, songName) {
     var xhr = new XMLHttpRequest();
@@ -16,12 +19,13 @@ export const AudioSourceInterface = {
           // setTrackBuffer function by passing in the songName so that we know what song to set the
           // audioBuffer for.
           trackAudioManager.setTrackBuffer(songName, audioBuffer);
-          // console.log('> backend track decoded and buffer set');
+          console.log('songName for buffer: ', songName);
+          console.log('> backend track decoded and buffer set');
         }
       )
     };
-    // console.log('audioCtx...', audioCtx);
-    // console.log('Loading backend track...');
+    console.log('audioCtx...', audioCtx);
+    console.log('Loading backend track...');
     xhr.send();
   }
 };

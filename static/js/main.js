@@ -11,31 +11,26 @@ import {PositionObj} from '/static/js/view/track_canvas/main_render.js';
  * the functions to play, stop, and seek the track position.
  */
 var trackAudioManager = new TrackAudioManager();
+var tempFileName, split, splitLength;
 
 document.getElementById("fname01").onchange = function(event) {
-    var tempFileName = event.target.value;
-    var split = tempFileName.split('\\');
-    var length1 = split.length-1;
-    tempFileName = split[length1];
+    tempFileName = event.target.value;
+    split = tempFileName.split('\\');
+    splitLength = split.length-1;
+    tempFileName = split[splitLength];
     trackAudioManager.setTrack1Name(tempFileName);
     AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track1Name);
     TrackCanvasInterface.initialRender(trackAudioManager.track1Name,trackAudioManager.track2Name);
-    console.log('File name 1: ', tempFileName);
-    console.log('File name 1: ', trackAudioManager.track1Name);
-    console.log('File name 2: ', trackAudioManager.track2Name);
   }
 
 document.getElementById("fname02").onchange = function(event) {
-      var tempFileName = event.target.value;
-      var split = tempFileName.split("\\");
-      var length2 = split.length-1;
-      tempFileName = split[length2];
+      tempFileName = event.target.value;
+      split = tempFileName.split("\\");
+      splitLength = split.length-1;
+      tempFileName = split[splitLength];
       trackAudioManager.setTrack2Name(tempFileName);
       AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track2Name);
       TrackCanvasInterface.initialRender(trackAudioManager.track1Name,trackAudioManager.track2Name);
-      console.log('File name 2: ', tempFileName);
-      console.log('File name 2: ', trackAudioManager.track2Name);
-      console.log('File name 1: ', trackAudioManager.track1Name);
   }
 
 // When the user presses the play / stop button, we tell the
