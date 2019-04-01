@@ -10,12 +10,12 @@ export const PositionObj = {
   play2Scale:1,
   track1Length:0,
   track2Length:0
-};
+}
 
 export const TrackCanvasInterface = {
   initialRender(f1,f2) {
 
-    var trackInputInfoList =  [
+    var trackInputInfoList = [
       {
         id: 'track1',
         color: '#FF5722',
@@ -31,9 +31,9 @@ export const TrackCanvasInterface = {
     ];
 
  // change filenames from mp3 into txt
- trackInputInfoList.forEach(function(trackInputInfo, i) {
-    var file1name = trackInputInfoList[i].fname;
-    var name=file1name.split(".")[0];
+ trackInputInfoList.forEach(function(t, i) {
+    var tempfilename = t.fname;
+    var name = tempfilename.split(".")[0];
     trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
   });
 
@@ -56,8 +56,8 @@ export const TrackCanvasInterface = {
 
   getPlayCursorPosPx() {
     return PositionObj.playCursor;
-  }
-};
+  },
+}
 
 //Draw a base coordinate showing pixal position in the X direction
 function baseAxis(mainSvgEl){
@@ -88,7 +88,7 @@ function renderPlayCursor(mainSvgEl) {
                                 .attr('height', mainSvgEl.attr('height'))
                                 .attr('width', 2)
                                 .attr('fill', 'blue');
-};
+}
 
 /**
  * Central function for defining event handling on SVG element.  We centralize
@@ -126,11 +126,11 @@ function rerenderTracks(svg, trackInputInfoList) {
   var trackPaddingPx = 30;
   var trackHeightPx = 70;
 
-  trackInputInfoList.forEach(function(trackInputInfo, i) {
-    var htmlElementId = trackInputInfo.id;
-    var fname = trackInputInfo.fname;
-    var color = trackInputInfo.color;
-    var bckgdcolor = trackInputInfo.backgroundcolor;
+  trackInputInfoList.forEach(function(t, i) {
+    var htmlElementId = t.id;
+    var fname = t.fname;
+    var color = t.color;
+    var bckgdcolor = t.backgroundcolor;
     var trackTopY = i *1.5* (trackPaddingPx + trackHeightPx) + trackPaddingPx;
     var trackBottomY = trackTopY + trackHeightPx;
 

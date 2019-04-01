@@ -11,7 +11,6 @@ var audioSource = null;
 // waveAnalyser.fftSize = 2048;
 // waveAnalyser.getByteTimeDomainData(dataArray);
 
-
 // todo: refactor to track audio manager file
 /**
  * The TrackAudioManager is a class that helps us organize each song and its
@@ -25,92 +24,65 @@ var audioSource = null;
 
 export class TrackAudioManager {
   constructor () {
-    /**
-     * New song attribute info be a dictionary. It will keep a mapping of song
-     * names to buffer information like this:
-     */
-    this.songBufferInfo = {
-       '02-SW-062018.mp3': {
-         'buffer': null,
-         'bpm': 95.23,
-         'audioSource': null,
-       },
-       '07-Littlewhiteboat.mp3': {
-         'buffer': null,
-         'bpm': 123.32,
-         'audioSource': null,
-       },
-     };
-
-     // 7. To begin tracking song1 name and song2 name, we simply create
-     // two variables here
-     this.track1Name = '02-SW-062018.mp3';
-     this.track2Name = '07-Littlewhiteboat.mp3';
+     this.songBufferInfo = [
+         {
+           trackName: '01-SW-042017.mp3',
+           buffer: null,
+           audioSource: null,
+           bpm: 95.23,
+         },
+         {
+           trackName: '03-SW-062017.mp3',
+           buffer: null,
+           audioSource: null,
+           bpm: 123.32,
+         },
+       ];
   }
 
-   // 8. We have to create 2 functions that allow us to change
-  // track1 and track2 names whenever we want to do so (i.e.
-  // when we load a new song)
-  setTrack1Name(track1Name) {
-    // You need to fill this section out.  It is a simple 1 line command.
-    this.track1Name = track1Name;
-    console.log('Newtrack1Name: ', this.track1Name);
-  }
-  // 8. Same thing for track 2
-  setTrack2Name(track2Name) {
-    // You need to fill this section out.  It is a simple 1 line command.
-    this.track2Name = track2Name;
-    console.log('Newtrack2Name: ', this.track2Name);
+  // 8. We have to create 2 functions that allow us to change track1 and track2
+  //names whenever we want to do so (i.e. when we load a new song)
+  setTrackName(i, trackiName) {
+    this.songBufferInfo[i].trackName = trackiName;
   }
 
-  setTrackBuffer (songName, audioBuffer) {
-    // first check if we have this song already
-    var songInfo = this.songBufferInfo[songName];
-    console.log('songInfoName: ', songName);
-    console.log('songInfo: ', songInfo);
+  setTrackBuffer (i, songName, audioBuffer) {
+    var songInfo = this.songBufferInfo[i];
     if (!songInfo) {
-      // If we haven't seen this song before, we want to "create an entry" for
-      // it in our mapping object
-      this.songBufferInfo[songName] = {};
+      this.songBufferInfo[i] = {};
     }
-    // now we know there is a mapping for our song, so we can set the audio
-    // buffer with the right data
-    this.songBufferInfo[songName]['buffer'] = audioBuffer;
+    this.songBufferInfo[i]['buffer'] = audioBuffer;
   }
 
-  _resetTrackSource (songName) {
-    this.songBufferInfo[songName]['audioSource'] = audioCtx.createBufferSource();
-    this.songBufferInfo[songName]['audioSource'].buffer = this.songBufferInfo[songName]['buffer'];
-    this.songBufferInfo[songName]['audioSource'].connect(audioCtx.destination);
+  _resetTrackSource (i, songName) {
+    this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
+    this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
+    this.songBufferInfo[i]['audioSource'].connect(audioCtx.destination);
   }
 
-  playTrack (songName, playOffsetSec, duration) {
-    if (this.songBufferInfo[songName]['audioSource'] === null) {
-      // Here, we set the audioSource if it has not been created yet
-      // var songNamei = this.songBufferInfo;
-      this._resetTrackSource(songName);
+  playTrack (i, songName, playOffsetSec, duration) {
+    if (this.songBufferInfo[i]['audioSource'] === null) {
+      this._resetTrackSource(i, songName);
     }
-    // If playOffsetSec parameter was not passed in, then it will be "undefined"
-    // In this case, we set the default value of 0
     if (typeof(playOffsetSec) === 'undefined') {
       playOffsetSec = 0;
     }
-    this.songBufferInfo[songName]['audioSource'].start(0, playOffsetSec, duration);
+    this.songBufferInfo[i]['audioSource'].start(0, playOffsetSec, duration);
   }
 
-  stopTrack (songName) {
-    this.songBufferInfo[songName]['audioSource'].stop();
-    this._resetTrackSource(songName);
+  stopTrack (i, songName) {
+    this.songBufferInfo[i]['audioSource'].stop();
+    this._resetTrackSource(i, songName);
   }
 
   playMixTrack (songName, playOffsetSec, duration) {
-    if (this.songBufferInfo[songName]['audioSource'] === null) {
-      this._resetTrackSource(songName);
+    if (this.songBufferInfo[0]['audioSource'] === null) {
+      this._resetTrackSource(0, songName);
     }
     if (typeof(playOffsetSec) === 'undefined') {
       playOffsetSec = 0;
     }
-    this.songBufferInfo[songName]['audioSource'].start(0, playOffsetSec, duration);
+    this.songBufferInfo[0]['audioSource'].start(0, playOffsetSec, duration);
   }
 
 };

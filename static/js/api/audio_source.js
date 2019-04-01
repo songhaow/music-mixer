@@ -5,11 +5,11 @@ import {audioCtx, TrackAudioManager} from '/static/js/audio_logic/audio_context_
 // AudioSourceInterface.loadBackendTrack(trackAudioManager, trackAudioManager.track2Name);
 
 export const AudioSourceInterface = {
-  loadBackendTrack(trackAudioManager, songName) {
+  loadBackendTrack(i, trackAudioManager, songName) {
     var xhr = new XMLHttpRequest();
 
     // GET the song from the backend python server
-    xhr.open('GET', 'http://localhost:8080/song?songName=' + songName, true);
+    xhr.open('GET', 'http://localhost:5000/song?songName=' + songName, true);
 
     xhr.responseType = 'arraybuffer';
     xhr.onload = function () {
@@ -18,8 +18,8 @@ export const AudioSourceInterface = {
         audioBuffer => {
           // setTrackBuffer function by passing in the songName so that we know what song to set the
           // audioBuffer for.
-          trackAudioManager.setTrackBuffer(songName, audioBuffer);
-          console.log('songName for buffer: ', songName);
+          trackAudioManager.setTrackBuffer(i, songName, audioBuffer);
+          // console.log('songName for buffer: ', songName);
           console.log('> backend track decoded and buffer set');
         }
       )
