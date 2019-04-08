@@ -24,12 +24,30 @@ def handle_song():
     song_path = path + song_name  # static/source_audio/xxx.mp3
 
 # this is to process the song and export ison file for beats & bpm
-    beatsbpm_txt(song_name, path)
-
+    song_info_json = beatsbpm_txt(song_name, path)
+    """
+    song_info_json = {
+        "beat_file": beat_key,
+        "beat_list": beats,
+        "bpm": bpm,
+    }
+    """
     content = ''
     with open(song_path, 'rb') as fp:
         content = fp.read()
-    return content
+
+    song_info_json['song_content'] = content
+    """
+    song_info_json = {
+        "beat_file": beat_key,
+        "beat_list": beats,
+        "bpm": bpm,
+        "song_content": "abc...xyz",
+    }
+    """
+
+    return song_info_json
+
 
 if __name__ == '__main__':
     app.run(port=8080)

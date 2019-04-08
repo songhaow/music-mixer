@@ -106,6 +106,8 @@ def beatsbpm_txt(song_name, path):
         "bpm": bpm,
       }
 
-    output_fp = open(beat_key_fname, "w")
-    output_fp.write(json.dumps(song_info_json))
-    output_fp.close()
+    return song_info_json
+
+    # output_fp = open(beat_key_fname, "w")
+    # output_fp.write(json.dumps(song_info_json))
+    # output_fp.close()
