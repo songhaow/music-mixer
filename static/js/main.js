@@ -38,11 +38,18 @@ document.getElementById("fname02").onchange = function(event) {
   TrackCanvasInterface.initialRender(trackAudioManager.songBufferInfo[0].trackName,trackAudioManager.songBufferInfo[1].trackName);
 }
 
+// NOTE: I have made a variable for track1 file name so we can always reference
+// it consistently
+var track1FileName = 'eyes.m4a';
+// same thing for track2
+var track1FileName = '07-Littlewhiteboat.mp3';
+
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
   trackAudioManager.playTrack(0, PositionObj.play1X);
  };
+
 
 document.querySelector('#pause1Button').onclick = function() {
    trackAudioManager.stopTrack(0);

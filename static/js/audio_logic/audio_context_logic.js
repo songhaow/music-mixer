@@ -53,7 +53,7 @@ export class TrackAudioManager {
     }
     this.songBufferInfo[i]['buffer'] = audioBuffer;
   }
-
+  
   _resetTrackSource (i) {
     this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
     this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
@@ -63,6 +63,7 @@ export class TrackAudioManager {
   playTrack (i, playOffsetSec, duration) {
     if (this.songBufferInfo[i]['audioSource'] === null) {
       this._resetTrackSource(i);
+
     }
     if (typeof(playOffsetSec) === 'undefined') {
       playOffsetSec = 0;
