@@ -18,61 +18,60 @@ AudioSourceInterface.loadBackendTrack(1,trackAudioManager, trackAudioManager.son
 TrackCanvasInterface.initialRender(trackAudioManager.songBufferInfo[0].trackName,trackAudioManager.songBufferInfo[1].trackName);
 
 document.getElementById("fname01").onchange = function(event) {
-    tempFileName = event.target.value;
-    split = tempFileName.split('\\');
-    splitLength = split.length-1;
-    tempFileName = split[splitLength];
-    trackAudioManager.setTrackName(0, tempFileName);
-    AudioSourceInterface.loadBackendTrack(0, trackAudioManager, trackAudioManager.songBufferInfo[0].trackName);
-    TrackCanvasInterface.initialRender(trackAudioManager.songBufferInfo[0].trackName,trackAudioManager.songBufferInfo[1].trackName);
-  }
+  tempFileName = event.target.value;
+  split = tempFileName.split('\\');
+  splitLength = split.length-1;
+  tempFileName = split[splitLength];
+  trackAudioManager.setTrackName(0, tempFileName);
+  AudioSourceInterface.loadBackendTrack(0, trackAudioManager, trackAudioManager.songBufferInfo[0].trackName);
+  TrackCanvasInterface.initialRender(trackAudioManager.songBufferInfo[0].trackName,trackAudioManager.songBufferInfo[1].trackName);
+}
 
 document.getElementById("fname02").onchange = function(event) {
-      tempFileName = event.target.value;
-      split = tempFileName.split("\\");
-      splitLength = split.length-1;
-      tempFileName = split[splitLength];
-      trackAudioManager.setTrackName(1, tempFileName);
-      AudioSourceInterface.loadBackendTrack(1, trackAudioManager, trackAudioManager.songBufferInfo[1].trackName);
-      TrackCanvasInterface.initialRender(trackAudioManager.songBufferInfo[0].trackName,trackAudioManager.songBufferInfo[1].trackName);
-  }
+  tempFileName = event.target.value;
+  split = tempFileName.split("\\");
+  splitLength = split.length-1;
+  tempFileName = split[splitLength];
+  PositionObj.track2Start = 0.0;
+  trackAudioManager.setTrackName(1, tempFileName);
+  AudioSourceInterface.loadBackendTrack(1, trackAudioManager, trackAudioManager.songBufferInfo[1].trackName);
+  TrackCanvasInterface.initialRender(trackAudioManager.songBufferInfo[0].trackName,trackAudioManager.songBufferInfo[1].trackName);
+}
 
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
-  trackAudioManager.playTrack(0, trackAudioManager.songBufferInfo[0].trackName, PositionObj.play1X);
-  // console.log('Mainplay1X: ', PositionObj.play1X);
+  trackAudioManager.playTrack(0, PositionObj.play1X);
  };
 
 document.querySelector('#pause1Button').onclick = function() {
-   trackAudioManager.stopTrack(0, trackAudioManager.songBufferInfo[0].trackName);
- };
+   trackAudioManager.stopTrack(0);
+};
 
 document.querySelector('#play2Button').onclick = function() {
-  var PlayOffset = PositionObj.play2X;
-  if ( PlayOffset< 0){
-    PlayOffset = 0;
+   var PlayOffset = PositionObj.play2X;
+   if (PlayOffset< 0){
+     PlayOffset = 0;
   }
-  trackAudioManager.playTrack(1, trackAudioManager.songBufferInfo[1].trackName, PlayOffset);
-  // console.log('Mainplay2X: ', PlayOffset);
-  };
+  trackAudioManager.playTrack(1, PlayOffset);
+};
 
 document.querySelector('#pause2Button').onclick = function() {
-  trackAudioManager.stopTrack(1, trackAudioManager.songBufferInfo[1].trackName);
+  trackAudioManager.stopTrack(1);
 };
 
 document.querySelector('#playMixButton').onclick = function() {
-  trackAudioManager.playMixTrack(trackAudioManager.songBufferInfo[0].trackName, 0, PositionObj.play1X);
+  trackAudioManager.playMixTrack(0, PositionObj.play1X);
   var waitTrack2 = 1000*PositionObj.play1X;
   setTimeout(playTrack2, waitTrack2);
   function playTrack2(){
-    trackAudioManager.playTrack(1, trackAudioManager.songBufferInfo[1].trackName, PositionObj.play2X);
+    trackAudioManager.playTrack(1, PositionObj.play2X);
   }
 };
 
 document.querySelector('#pauseMixButton').onclick = function() {
-  trackAudioManager.stopTrack(0, trackAudioManager.songBufferInfo[0].trackName);
-  trackAudioManager.stopTrack(1, trackAudioManager.songBufferInfo[1].trackName);
+  trackAudioManager.stopTrack(0);
+  trackAudioManager.stopTrack(1);
 }
 
 /**

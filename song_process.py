@@ -11,11 +11,11 @@ def calculate_song_bpm(path):
     """ Calculate the beats per minute (bpm) of a given file.
         path: path to the file
     """
+    beats = []  # List of beats, in samples
     samplerate, win_s, hop_s = 44100, 1024, 512
     s = source(path, samplerate, hop_s)
     samplerate = s.samplerate
     o = tempo("specdiff", win_s, hop_s, samplerate)
-    beats = []  # List of beats, in samples
     total_frames = 0 # Total number of frames read
 
     while True:
@@ -33,8 +33,8 @@ def calculate_song_bpm(path):
             if len(beats) > 1:
                 if len(beats) < 4:
                     print("few beats found in {:s}".format(path))
-                bpms = 60./diff(beats) #bpms is an array
-                meadianbpm = median(bpms) #meanvalue of bpm
+                bpms = 60./diff(beats) # bpms is an array
+                meadianbpm = median(bpms) # meanvalue of bpm
                 return meadianbpm
             else:
                 print("not enough beats found in {:s}".format(path))
@@ -43,24 +43,52 @@ def calculate_song_bpm(path):
     return beats_to_bpm(path, beats)
 #-----------------------------------------------------------------
 def calculate_song_beats(path):
-      beat_list = []  # list of beats, in samples
-      samplerate, win_s, hop_s = 44100, 1024, 512
-      s = source(path, samplerate, hop_s)
-      samplerate = s.samplerate
-      o = tempo("default", win_s, hop_s, samplerate)
-      # tempo detection delay, in samples
-      # default to 4 blocks delay to catch up with
-      delay = 4. * hop_s
-      total_frames = 0 # total number of frames read
-      while True:
-          samples, read = s()
-          is_beat = o(samples)
-          if is_beat:
-              this_beat = int(total_frames - delay + is_beat[0] * hop_s)
-              beati= this_beat / float(samplerate)
-              beat_list.append(beati)
-          total_frames += read
-          if read < hop_s: return beat_list
+    # beat_list = []  # list of beats, in samples
+    # samplerate, win_s, hop_s = 44100, 1024, 512
+    # s = source(path, samplerate, hop_s)
+    # samplerate = s.samplerate
+    # o = tempo("default", win_s, hop_s, samplerate)
+
+    # delay = 4. * hop_s
+    # total_frames = 0 # total number of frames read
+    # while True:
+        # samples, read = s()
+        # is_beat = o(samples)
+        # if is_beat:
+            # this_beat = int(total_frames - delay + is_beat[0] * hop_s)
+            # beati= this_beat / float(samplerate)
+            # beat_list.append(beati)
+            # total_frames += read
+        # if read < hop_s: return beat_list
+
+
+
+# path = f'{DATA_FOLDER}/{path}'
+    win_s = 512                 # fft size
+    hop_s = win_s // 2          # hop size
+    filename = path
+    samplerate = 0
+    total_frames = 0
+    s = source(filename, samplerate, hop_s)
+    samplerate = s.samplerate
+    o = tempo("default", win_s, hop_s, samplerate)
+    delay = 4. * hop_s
+
+    beats = [] # list of beats
+    beats01=[]
+
+    while True:
+      samples, read = s()
+      is_beat = o(samples)
+      if is_beat:
+        this_beat = int(total_frames - delay + is_beat[0] * hop_s)
+        beats.append(this_beat)
+        beats01.append(this_beat / float(samplerate))
+      total_frames += read
+      if read < hop_s: break
+
+    return beats01
+
 #--------------------------------------------------------------
 def beatsbpm_txt(song_name, path):
 
@@ -75,7 +103,7 @@ def beatsbpm_txt(song_name, path):
     song_info_json = {
         "beat_file": beat_key,
         "beat_list": beats,
-        "bpm": bpm
+        "bpm": bpm,
       }
 
     output_fp = open(beat_key_fname, "w")

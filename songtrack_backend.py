@@ -23,7 +23,7 @@ def handle_song():
     path = 'static/source_audio/'
     song_path = path + song_name  # static/source_audio/xxx.mp3
 
-    # this is to process the song and export ison file for beats & bpm
+# this is to process the song and export ison file for beats & bpm
     beatsbpm_txt(song_name, path)
 
     content = ''
@@ -32,5 +32,5 @@ def handle_song():
     return content
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=8080)
     # """rb=> read bitwize; fp=> file pointer"""

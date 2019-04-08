@@ -46,7 +46,7 @@ export class TrackAudioManager {
     this.songBufferInfo[i].trackName = trackiName;
   }
 
-  setTrackBuffer (i, songName, audioBuffer) {
+  setTrackBuffer (i, audioBuffer) {
     var songInfo = this.songBufferInfo[i];
     if (!songInfo) {
       this.songBufferInfo[i] = {};
@@ -54,15 +54,15 @@ export class TrackAudioManager {
     this.songBufferInfo[i]['buffer'] = audioBuffer;
   }
 
-  _resetTrackSource (i, songName) {
+  _resetTrackSource (i) {
     this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
     this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
     this.songBufferInfo[i]['audioSource'].connect(audioCtx.destination);
   }
 
-  playTrack (i, songName, playOffsetSec, duration) {
+  playTrack (i, playOffsetSec, duration) {
     if (this.songBufferInfo[i]['audioSource'] === null) {
-      this._resetTrackSource(i, songName);
+      this._resetTrackSource(i);
     }
     if (typeof(playOffsetSec) === 'undefined') {
       playOffsetSec = 0;
@@ -70,14 +70,14 @@ export class TrackAudioManager {
     this.songBufferInfo[i]['audioSource'].start(0, playOffsetSec, duration);
   }
 
-  stopTrack (i, songName) {
+  stopTrack (i) {
     this.songBufferInfo[i]['audioSource'].stop();
-    this._resetTrackSource(i, songName);
+    this._resetTrackSource(i);
   }
 
-  playMixTrack (songName, playOffsetSec, duration) {
+  playMixTrack (playOffsetSec, duration) {
     if (this.songBufferInfo[0]['audioSource'] === null) {
-      this._resetTrackSource(0, songName);
+      this._resetTrackSource(0);
     }
     if (typeof(playOffsetSec) === 'undefined') {
       playOffsetSec = 0;
