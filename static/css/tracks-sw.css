@@ -1,10 +1,15 @@
 html, body{
-  /* margin: 10px; */
   height: 100%;
-  font-size: 16px;
+  font-size: 14px;
   font-family: serif;
-  /* color: red; */
-  /* background-color: #eeeeee; */
+}
+.head{
+  background-color: rgb(0,60,60);
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 15px;
 }
 line {
   stroke: green;
@@ -15,48 +20,86 @@ line.xaxis {
   stroke-width: 8px;
 }
 
-.head{
-  background-color: red;
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  padding: 5px;
+.box00{
+  background: linear-gradient(white, rgb(10,10,10));
 }
 
 .div01{
+  padding: 5px;
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 
-.divd3{
-  /* margin-left: auto;
-  margin-right: auto; */
-  margin-left:5px;
-}
-
-.div02{
-  width: 1150px;
+.div03{
+  padding: 5px;
+  text-align: center;
+  border-radius: 10px;
+  width: 1100px;
   margin-left: auto;
   margin-right: auto;
-  font-size: 16px;
-  background-color: #eeeeee;
+  background-color: rgb(50,100,120);
+  margin-bottom: 5px;
 }
 
-.box{
-  width: 500px;
+.playbox{
+  border-radius: 5px;
+  width: 250px;
   margin: 5px;
-  padding: 20px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  padding-top: 5px;
   display: inline-block;
   vertical-align: top;
-  background-color: white;
-  font-size: 16px;
+  background: linear-gradient(white, rgb(50,50,50));
+  font-size: 20px;
 }
 
-/* fname01 input{
-  background-color: #888888;
-} */
+.myImg{
+  border-radius: 5px;
+  padding-top: 5px;
+  background: linear-gradient( white,rgb(50,50,50));
+}
 
-input:hover{
-  background-color: #eeeeee;
+.inputbox{
+  border-radius: 5px;
+  width: 500px;
+  margin: 5px;
+  padding-left: 30px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  display: inline-block;
+  vertical-align: top;
+  background: linear-gradient(white, rgb(50,50,50));
+  font-size: 20px;
+}
+
+input:hover, button:hover{
+  border-radius: 5px;
+  background-color: rgb(150,150,150);
+}
+
+audio:hover{
+  border-radius: 20px;
+  background-color: #ffffff;
+}
+
+#play1Button,#play2Button,#playMixButton {
+  border-radius: 5px;
+  font-family: serif;
+  font-size: 20px;
+  color: red;
+}
+#pause1Button, #pause2Button,#pauseMixButton{
+  border-radius: 5px;
+  font-family: serif;
+  font-size: 20px;
+  color: brown;
+}
+
+#fname01,#fname02{
+  border-radius: 5px;
+  font-family: serif;
+  font-size: 20px;
+  color: black;
 }
