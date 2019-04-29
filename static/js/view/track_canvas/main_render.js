@@ -1,4 +1,7 @@
 import {TimeUtil} from '/static/js/view/utils/time_util.js';
+import {audioCtx, TrackAudioManager} from '/static/js/audio_logic/audio_context_logic.js';
+
+var trackAudioManager = new TrackAudioManager();
 
 export const PositionObj = {
   track1Start:0, // track1 starting coordinate (track1 not move for now)
@@ -20,16 +23,18 @@ export const TrackCanvasInterface = {
         id: 'track1',
         color: '#FF5722',
         backgroundcolor: '#F2D7D5',
-        fname: f1
+        fname: f1,
       },
       {
         id: 'track2',
         color: 'green',
         backgroundcolor: '#D1F2EB',
-        fname: f2
+        fname: f2,
       },
     ];
 
+ // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].bpm);
+ // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].beat_list);
  // change filenames from mp3 into txt
  trackInputInfoList.forEach(function(t, i) {
     var tempfilename = t.fname;
@@ -41,7 +46,7 @@ export const TrackCanvasInterface = {
 
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
-    bindEventHandlers(svg, trackInputInfoList);
+    bindEventHandlers(svg);
     baseAxis(svg);
   },
 
@@ -95,7 +100,7 @@ function renderPlayCursor(mainSvgEl) {
  * SVG event handling here so it will be easy to see and manage possible
  * different events we want to have.
  */
-function bindEventHandlers(mainSvgEl, trackInputInfoList) {
+function bindEventHandlers(mainSvgEl) {
   // Play Cursor is a <rect> element with id "playCursorRect". Using HTML id
   // attr because there should only be one cursor.
   var playCursorRect = mainSvgEl.select('#playCursorRect');
@@ -138,8 +143,8 @@ function rerenderTracks(svg, trackInputInfoList) {
     var w = svg.attr('width');
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
     renderAllTrackInfo(
-      htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
-      bckgdcolor, i, w, trackInputInfoList);
+      i, htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
+      bckgdcolor, w, trackInputInfoList, trackAudioManager);
   });
 }
 
@@ -152,8 +157,10 @@ function rerenderTracks(svg, trackInputInfoList) {
  * @param {Number}    trackBottomY: Y coordinate on SVG canvas for bottom of track
  * @param {String}    color: Color to render track in
  */
-function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
-  color, bckgdcolor, i, w,trackInputInfoList){
+function renderAllTrackInfo(i,htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
+  color, bckgdcolor, w, trackInputInfoList, trackAudioManager){
+    // console.log('bpm00: ', trackAudioManager.songBufferInfo[i].bpm);
+    // console.log('beatList00: ', trackAudioManager.songBufferInfo[i].beat_list);
     d3.json(fname, function(error, data) {
     var bpm01 = data.bpm;
     bpm01 = d3.format(".0f")(bpm01)
@@ -161,7 +168,7 @@ function renderAllTrackInfo(htmlElementId, trackDisplayGroup, fname, trackTopY, 
     var xOffset = d3.min(beatListArray);
     var xMin = 0;
     var xMax = d3.max(beatListArray);
-    console.log('SongLength:', xMax);
+    // console.log('SongLength:', xMax);
     var axisScale = d3.scaleLinear()
                       .domain([xMin,xMax])
                       .range([0,w]);

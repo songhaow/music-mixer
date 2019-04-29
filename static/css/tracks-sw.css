@@ -31,49 +31,6 @@ line.xaxis {
   margin-right: auto;
 }
 
-.div03{
-  padding: 5px;
-  text-align: center;
-  border-radius: 10px;
-  width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: rgb(50,100,120);
-  margin-bottom: 5px;
-}
-
-.playbox{
-  border-radius: 5px;
-  width: 250px;
-  margin: 5px;
-  padding-left: 10px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  display: inline-block;
-  vertical-align: top;
-  background: linear-gradient(white, rgb(50,50,50));
-  font-size: 20px;
-}
-
-.myImg{
-  border-radius: 5px;
-  padding-top: 5px;
-  background: linear-gradient( white,rgb(50,50,50));
-}
-
-.inputbox{
-  border-radius: 5px;
-  width: 500px;
-  margin: 5px;
-  padding-left: 30px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  display: inline-block;
-  vertical-align: top;
-  background: linear-gradient(white, rgb(50,50,50));
-  font-size: 20px;
-}
-
 input:hover, button:hover{
   border-radius: 5px;
   background-color: rgb(150,150,150);
