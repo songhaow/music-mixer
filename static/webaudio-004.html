@@ -34,7 +34,7 @@
 var audio = new Audio();
 audio.src = '../static/source_audio/eyes.m4a';
 audio.controls = true;
-audio.loop = true;
+// audio.loop = true;
 
 var i, canvas, ctx, source, context, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
 
@@ -43,15 +43,15 @@ window.addEventListener("load", initMp3Player, false);
 //
 function initMp3Player(){
     document.getElementById('audio_box').appendChild(audio);
-    context = new AudioContext();
-    analyser = context.createAnalyser();
-    canvas = document.getElementById('analyser_render');
-    ctx = canvas.getContext('2d');
+    // context = new AudioContext();
+    // analyser = context.createAnalyser();
+    // canvas = document.getElementById('analyser_render');
+    // ctx = canvas.getContext('2d');
     // Re-route audio playback into the processing graph of the AudioContext
-    source = context.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(context.destination);
-    frameLooper();
+    // source = context.createMediaElementSource(audio);
+    // source.connect(analyser);
+    // analyser.connect(context.destination);
+    // frameLooper();
 }
 
 // frameLooper() animates any style of graphics you wish to the audio frame

@@ -76,8 +76,18 @@
       padding: 5px;
       text-align: center;
       width: 800px;
-      height: 100px;
+      height: 160px;
       background-color: #002D3C;
+      margin: auto;
+    }
+
+    #analyser_render{
+      align-items: center;
+      padding: 5px;
+      text-align: center;
+      width: 700px;
+      height: 90px;
+      background: linear-gradient(white, rgb(50,50,50));
       margin: auto;
     }
 
@@ -127,6 +137,7 @@
 
       <div id = "freq_graph">
          <canvas id = "analyser_render"></canvas>
+         <div id = "audio_box"></div>
       </div>
 
     </div>
@@ -143,6 +154,14 @@
     </div> -->
 
   </body>
+
+  <!-- <script>
+  canvas = document.getElementById('analyser_render');
+  console.log('canvas width&height: ', canvas.width, canvas.height);
+  ctx = canvas.getContext('2d');
+  ctx.fillStyle = "rgb(200,0,200)";
+  ctx.fillRect(10,10,30,30);
+  </script> -->
 
   <script src="static/js/main.js" type="module"></script>
 

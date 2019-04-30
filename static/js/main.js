@@ -47,6 +47,7 @@ document.getElementById("fname02").onchange = function(e) {
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
   trackAudioManager.playTrack(0, PositionObj.play1X);
+  trackAudioManager.frequencyDemo(0);
  };
 
 document.querySelector('#pause1Button').onclick = function() {
