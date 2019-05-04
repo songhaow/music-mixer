@@ -23,6 +23,11 @@ export const TrackCanvasInterface = {
         id: 'track1',
         color: '#FF5722',
         backgroundcolor: '#F2D7D5',
+        // todo: you do not need these variables anymore, however, you
+        // do need to know that track1's information is kept as the first
+        // element in the song data in TrackAudioManager.songBufferInfo
+        // So you probably want an attribute called songBufferInfoIndex
+        // and have that set to 0 (and 1 below).
         fname: f1,
       },
       {
@@ -33,14 +38,16 @@ export const TrackCanvasInterface = {
       },
     ];
 
- // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].bpm);
- // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].beat_list);
- // change filenames from mp3 into txt
- trackInputInfoList.forEach(function(t, i) {
-    var tempfilename = t.fname;
-    var name = tempfilename.split(".")[0];
-    trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
-  });
+    // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].bpm);
+    // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].beat_list);
+    // change filenames from mp3 into txt
+    trackInputInfoList.forEach(function(t, i) {
+      var tempfilename = t.fname;
+      var name = tempfilename.split(".")[0];
+      // todo: you no longer need to calculate any of this info,
+      // we are not using the txt file anymore
+      trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
+    });
 
     var svg = d3.select('svg');
 
@@ -133,6 +140,7 @@ function rerenderTracks(svg, trackInputInfoList) {
 
   trackInputInfoList.forEach(function(t, i) {
     var htmlElementId = t.id;
+    // todo: we do not need fname anymore because we are not using it to get txt file info
     var fname = t.fname;
     var color = t.color;
     var bckgdcolor = t.backgroundcolor;
@@ -142,6 +150,9 @@ function rerenderTracks(svg, trackInputInfoList) {
     var trackDisplayGroup = svg.append('g');
     var w = svg.attr('width');
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
+    // todo: Here, you do not need to pass fname, but you do need to tell renderAllTrackInfo where
+    // to get song meta info for the song you're trying to update. Pass in the
+    // songBufferInfoIndex value you made above
     renderAllTrackInfo(
       i, htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
       bckgdcolor, w, trackInputInfoList, trackAudioManager);
@@ -157,11 +168,18 @@ function rerenderTracks(svg, trackInputInfoList) {
  * @param {Number}    trackBottomY: Y coordinate on SVG canvas for bottom of track
  * @param {String}    color: Color to render track in
  */
-function renderAllTrackInfo(i,htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
-  color, bckgdcolor, w, trackInputInfoList, trackAudioManager){
-    // console.log('bpm00: ', trackAudioManager.songBufferInfo[i].bpm);
-    // console.log('beatList00: ', trackAudioManager.songBufferInfo[i].beat_list);
-    d3.json(fname, function(error, data) {
+function renderAllTrackInfo(
+    i, htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
+    color, bckgdcolor, w, trackInputInfoList, trackAudioManager){
+  // console.log('bpm00: ', trackAudioManager.songBufferInfo[i].bpm);
+  // console.log('beatList00: ', trackAudioManager.songBufferInfo[i].beat_list);
+
+  // todo: We do not need fname or d3.json anymore to get bpm or beat
+  // list info. That should all be pre-populated already in
+  // TrackAudioManager.songBufferInfo. You should have a new parameter
+  // with the index into songBufferInfo that will let you get bpm and
+  // beat_list.
+  d3.json(fname, function(error, data) {
     var bpm01 = data.bpm;
     bpm01 = d3.format(".0f")(bpm01)
     var beatListArray = data.beat_list;
@@ -177,8 +195,7 @@ function renderAllTrackInfo(i,htmlElementId, trackDisplayGroup, fname, trackTopY
     if (i==0){
       PositionObj.play1Scale = xScale;
       PositionObj.track1Length = xMax;
-    }
-    else{
+    } else {
       PositionObj.play2Scale = xScale;
       PositionObj.track2Length = xMax;
     }
@@ -186,7 +203,7 @@ function renderAllTrackInfo(i,htmlElementId, trackDisplayGroup, fname, trackTopY
     var xStart = 0;
     var xAxis = d3.axisBottom().scale(axisScale);
 
-// change .txt to .mp3
+    // change .txt to .mp3
     var split = fname.split('/');
     var length1 = split.length-1;
     var fnameTxt = split[length1];

@@ -15,6 +15,7 @@ export const AudioSourceInterface = {
     xhr.responseType = 'json';
     xhr.onload = function () {
       // debugger;
+      console.log('got song meta info');
       fetchAndLoadSongContent(i, trackAudioManager, songName, xhr.response.beat_list, xhr.response.bpm);
     };
     console.log('Loading backend track - 01');
@@ -34,9 +35,11 @@ function fetchAndLoadSongContent(i, trackAudioManager, songName, beat_list, bpm)
     // debugger;
     audioCtx.decodeAudioData(xhr.response).then(
       audioBuffer => {
-        // debugger;
         trackAudioManager.setTrackBuffer(i, audioBuffer);
         console.log('> backend track decoded and buffer set');
+        
+        // todo: Add a call to renderOnly(). We have the song info and buffer set.
+        // You will have to import that function from main.js.
       }
     )
   };
