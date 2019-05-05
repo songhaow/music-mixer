@@ -1,0 +1,249 @@
+<!-- https://noisehack.com/build-music-visualizer-web-audio-api/-->
+<!-- dislay frequencies while playing laserlike graph-->
+<!doctype html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<title>Build a Music Visualizer with the Web Audio API</title>
+		<meta name="description" content="Basics of music visualization using the Web Audio API.">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- <link rel="canonical" href="http://noisehack.com/build-music-visualizer-web-audio-api/"> -->
+		<!-- <link href="//fonts.googleapis.com/css?family=Iceberg|Source+Sans+Pro:400,700,400italic,700italic" rel="stylesheet" type="text/css"> -->
+		<link rel="stylesheet" href="../static/css/build-music-visualizer.css">
+		<script>
+		window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+		ga('create', 'UA-15976986-14', 'auto');
+		ga('send', 'pageview');
+		</script>
+		<!-- <script async src="https://www.google-analytics.com/analytics.js"></script> -->
+		<script src="../static/js/build-music-visualizer/jquery.min.js"></script>
+    <script src="../static/js/build-music-visualizer/build-music-visualizer-web-audio.js"></script>
+	</head>
+	<body>
+
+		<div id="container">
+		<article>
+<!--more-->
+<p>
+<button class="play-btn">
+Saw Sweep
+</button>
+<button class="song-btn">
+Play Song
+</button>
+</p>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> analyser <span class="op">=</span> <span class="va">audioContext</span>.<span class="at">createAnalyser</span>()
+<span class="va">masterGain</span>.<span class="at">connect</span>(analyser)
+<span class="kw">const</span> waveform <span class="op">=</span> <span class="kw">new</span> <span class="at">Float32Array</span>(<span class="va">analyser</span>.<span class="at">frequencyBinCount</span>)
+<span class="va">analyser</span>.<span class="at">getFloatTimeDomainData</span>(waveform)</code></pre></div>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">;</span>(<span class="kw">function</span> <span class="at">updateWaveform</span>() <span class="op">{</span>
+  <span class="at">requestAnimationFrame</span>(updateWaveform)
+  <span class="va">analyser</span>.<span class="at">getFloatTimeDomainData</span>(waveform)
+<span class="op">}</span>)()</code></pre></div>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> scopeCanvas <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'oscilloscope'</span>)
+<span class="va">scopeCanvas</span>.<span class="at">width</span> <span class="op">=</span> <span class="va">waveform</span>.<span class="at">length</span>
+<span class="va">scopeCanvas</span>.<span class="at">height</span> <span class="op">=</span> <span class="dv">200</span>
+<span class="kw">const</span> scopeContext <span class="op">=</span> <span class="va">scopeCanvas</span>.<span class="at">getContext</span>(<span class="st">'2d'</span>)
+
+<span class="op">;</span>(<span class="kw">function</span> <span class="at">drawOscilloscope</span>() <span class="op">{</span>
+  <span class="at">requestAnimationFrame</span>(drawOscilloscope)
+  <span class="va">scopeContext</span>.<span class="at">clearRect</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="va">scopeCanvas</span>.<span class="at">width</span><span class="op">,</span> <span class="va">scopeCanvas</span>.<span class="at">height</span>)
+  <span class="va">scopeContext</span>.<span class="at">beginPath</span>()
+  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="va">waveform</span>.<span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span>
+    <span class="kw">const</span> x <span class="op">=</span> i
+    <span class="kw">const</span> y <span class="op">=</span> (<span class="fl">0.5</span> <span class="op">+</span> waveform[i] / <span class="dv">2</span>) <span class="op">*</span> <span class="va">scopeCanvas</span>.<span class="at">height</span><span class="op">;</span>
+    <span class="cf">if</span> (i <span class="op">==</span> <span class="dv">0</span>) <span class="op">{</span>
+      <span class="va">scopeContext</span>.<span class="at">moveTo</span>(x<span class="op">,</span> y)
+    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span>
+      <span class="va">scopeContext</span>.<span class="at">lineTo</span>(x<span class="op">,</span> y)
+    <span class="op">}</span>
+  <span class="op">}</span>
+  <span class="va">scopeContext</span>.<span class="at">stroke</span>()
+<span class="op">}</span>)()</code></pre></div>
+<p>
+<canvas id="oscilloscope">
+</canvas>
+</p>
+<p>
+<button class="play-btn">
+Saw Sweep
+</button>
+<button class="song-btn">
+Play Song
+</button>
+</p>
+<p>Try clicking the “Saw Sweep” button multiple times to see how the waveform responds.</p>
+<h2 id="spectrum-visualization-with-the-canvas-api">Spectrum Visualization with the Canvas API</h2>
+<p>The AnalyserNode also provides data on the frequencies currently present in the audio. It runs an <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform">FFT</a> on the waveform data and exposes these values as an array. In this case we’ll request the data as a <code>Uint8Array</code> because values in the range 0-255 are exactly what we need when performing Canvas pixel manipulation.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> spectrum <span class="op">=</span> <span class="kw">new</span> <span class="at">Uint8Array</span>(<span class="va">analyser</span>.<span class="at">frequencyBinCount</span>)
+<span class="op">;</span>(<span class="kw">function</span> <span class="at">updateSpectrum</span>() <span class="op">{</span>
+  <span class="at">requestAnimationFrame</span>(updateSpectrum)
+  <span class="va">analyser</span>.<span class="at">getByteFrequencyData</span>(spectrum)
+<span class="op">}</span>)()</code></pre></div>
+<p>Similar to the <code>waveform</code> array, the <code>spectrum</code> array will now be updated 60 times per second with the current audio spectrum. The values correspond to the volume of a given slice of the spectrum, in order from low frequencies to high frequencies. Let’s see how to use this data to create a visualization known as a <a href="https://en.wikipedia.org/wiki/Spectrogram">spectrogram</a>.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> spectroCanvas <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'spectrogram'</span>)
+<span class="va">spectroCanvas</span>.<span class="at">width</span> <span class="op">=</span> <span class="va">spectrum</span>.<span class="at">length</span>
+<span class="va">spectroCanvas</span>.<span class="at">height</span> <span class="op">=</span> <span class="dv">200</span>
+<span class="kw">const</span> spectroContext <span class="op">=</span> <span class="va">spectroCanvas</span>.<span class="at">getContext</span>(<span class="st">'2d'</span>)
+<span class="kw">let</span> spectroOffset <span class="op">=</span> <span class="dv">0</span>
+
+<span class="op">;</span>(<span class="kw">function</span> <span class="at">drawSpectrogram</span>() <span class="op">{</span>
+  <span class="at">requestAnimationFrame</span>(drawSpectrogram)
+  <span class="kw">const</span> slice <span class="op">=</span> <span class="va">spectroContext</span>.<span class="at">getImageData</span>(<span class="dv">0</span><span class="op">,</span> spectroOffset<span class="op">,</span> <span class="va">spectroCanvas</span>.<span class="at">width</span><span class="op">,</span> <span class="dv">1</span>)
+  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="va">spectrum</span>.<span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span>
+    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">0</span>] <span class="op">=</span> spectrum[i] <span class="co">// R</span>
+    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> spectrum[i] <span class="co">// G</span>
+    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">2</span>] <span class="op">=</span> spectrum[i] <span class="co">// B</span>
+    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">3</span>] <span class="op">=</span> <span class="dv">255</span>         <span class="co">// A</span>
+  <span class="op">}</span>
+  <span class="va">spectroContext</span>.<span class="at">putImageData</span>(slice<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> spectroOffset)
+  spectroOffset <span class="op">+=</span> <span class="dv">1</span>
+  spectroOffset <span class="op">%=</span> <span class="va">spectroCanvas</span>.<span class="at">height</span>
+<span class="op">}</span>)()</code></pre></div>
+<p>
+<canvas id="spectrogram">
+</canvas>
+</p>
+<p>
+<button class="play-btn">
+Saw Sweep
+</button>
+<button class="song-btn">
+Play Song
+</button>
+</p>
+<p>I’ve found the spectrogram to be one of the most useful tools for analyzing audio, for instance to find out what chord is being played or to debug a synth patch that doesn’t sound right. Spectrograms are also good for finding <a href="https://en.wikipedia.org/wiki/Windowlicker#Hidden_images">easter eggs</a>!</p>
+<h2 id="visualizations-with-webgl-shaders">Visualizations with WebGL Shaders</h2>
+<p>My favorite computer graphics technique is <a href="https://en.wikipedia.org/wiki/Shader">fullscreen pixel shaders</a> with WebGL. Normally several pixel shaders are used in combination with 3D geometry to render a scene, but today we’re going to skip the geometry and render the entire scene using a single pixel shader (aka fragment shader). There’s a bit more boilerplate compared to the Canvas API, but the end result is well worth it.</p>
+<p>To start, we need to draw a rectangle (aka quad) covering the entire screen. This is the surface upon which the fragment shader will be drawn.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">initQuad</span>(gl) <span class="op">{</span>
+  <span class="kw">const</span> vbo <span class="op">=</span> <span class="va">gl</span>.<span class="at">createBuffer</span>()
+  <span class="va">gl</span>.<span class="at">bindBuffer</span>(<span class="va">gl</span>.<span class="at">ARRAY_BUFFER</span><span class="op">,</span> vbo)
+  <span class="kw">const</span> vertices <span class="op">=</span> <span class="kw">new</span> <span class="at">Float32Array</span>([<span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span>])
+  <span class="va">gl</span>.<span class="at">bufferData</span>(<span class="va">gl</span>.<span class="at">ARRAY_BUFFER</span><span class="op">,</span> vertices<span class="op">,</span> <span class="va">gl</span>.<span class="at">STATIC_DRAW</span>)
+  <span class="va">gl</span>.<span class="at">vertexAttribPointer</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">FLOAT</span><span class="op">,</span> <span class="kw">false</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span>)
+<span class="op">}</span>
+
+<span class="kw">function</span> <span class="at">renderQuad</span>(gl) <span class="op">{</span>
+  <span class="va">gl</span>.<span class="at">drawArrays</span>(<span class="va">gl</span>.<span class="at">TRIANGLE_STRIP</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">4</span>)
+<span class="op">}</span></code></pre></div>
+<p>Now that we have the fullscreen quad (technically it’s two half-screen triangles), we need a shader program. Here’s a function that takes a vertex shader and a fragment shader, and returns a compiled shader program.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">createShader</span>(gl<span class="op">,</span> vertexShaderSrc<span class="op">,</span> fragmentShaderSrc) <span class="op">{</span>
+  <span class="kw">const</span> vertexShader <span class="op">=</span> <span class="va">gl</span>.<span class="at">createShader</span>(<span class="va">gl</span>.<span class="at">VERTEX_SHADER</span>)
+  <span class="va">gl</span>.<span class="at">shaderSource</span>(vertexShader<span class="op">,</span> vertexShaderSrc)
+  <span class="va">gl</span>.<span class="at">compileShader</span>(vertexShader)
+  <span class="cf">if</span> (<span class="op">!</span><span class="va">gl</span>.<span class="at">getShaderParameter</span>(vertexShader<span class="op">,</span> <span class="va">gl</span>.<span class="at">COMPILE_STATUS</span>)) <span class="op">{</span>
+    <span class="cf">throw</span> <span class="kw">new</span> <span class="at">Error</span>(<span class="va">gl</span>.<span class="at">getShaderInfoLog</span>(vertexShader))
+  <span class="op">}</span>
+
+  <span class="kw">const</span> fragmentShader <span class="op">=</span> <span class="va">gl</span>.<span class="at">createShader</span>(<span class="va">gl</span>.<span class="at">FRAGMENT_SHADER</span>)
+  <span class="va">gl</span>.<span class="at">shaderSource</span>(fragmentShader<span class="op">,</span> fragmentShaderSrc)
+  <span class="va">gl</span>.<span class="at">compileShader</span>(fragmentShader)
+  <span class="cf">if</span> (<span class="op">!</span><span class="va">gl</span>.<span class="at">getShaderParameter</span>(fragmentShader<span class="op">,</span> <span class="va">gl</span>.<span class="at">COMPILE_STATUS</span>)) <span class="op">{</span>
+    <span class="cf">throw</span> <span class="kw">new</span> <span class="at">Error</span>(<span class="va">gl</span>.<span class="at">getShaderInfoLog</span>(fragmentShader))
+  <span class="op">}</span>
+
+  <span class="kw">const</span> shader <span class="op">=</span> <span class="va">gl</span>.<span class="at">createProgram</span>()
+  <span class="va">gl</span>.<span class="at">attachShader</span>(shader<span class="op">,</span> vertexShader)
+  <span class="va">gl</span>.<span class="at">attachShader</span>(shader<span class="op">,</span> fragmentShader)
+  <span class="va">gl</span>.<span class="at">linkProgram</span>(shader)
+  <span class="va">gl</span>.<span class="at">useProgram</span>(shader)
+
+  <span class="cf">return</span> shader
+<span class="op">}</span></code></pre></div>
+
+
+
+<div class="sourceCode" id="vertex-shader"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span class="dt">attribute</span> <span class="dt">vec2</span> position;
+
+<span class="dt">void</span> <span class="fu">main</span>(<span class="dt">void</span>) {
+  <span class="bu">gl_Position</span> = <span class="dt">vec4</span>(position, <span class="dv">0</span>, <span class="dv">1</span>);
+}</code></pre></div>
+
+
+<div class="sourceCode" id="fragment-shader"><pre class="sourceCode glsl"><code class="sourceCode glsl">precision mediump <span class="dt">float</span>;
+
+<span class="kw">uniform</span> <span class="dt">float</span> time;
+<span class="kw">uniform</span> <span class="dt">vec2</span> resolution;
+<span class="kw">uniform</span> <span class="dt">sampler2D</span> spectrum;
+
+<span class="dt">void</span> <span class="fu">main</span>(<span class="dt">void</span>) {
+  <span class="dt">vec3</span> c;
+  <span class="dt">float</span> z = <span class="fl">0.1</span> * time;
+  <span class="dt">vec2</span> uv = <span class="bu">gl_FragCoord</span>.<span class="fu">xy</span> / resolution;
+  <span class="dt">vec2</span> p = uv - <span class="fl">0.5</span>;
+  p.<span class="fu">x</span> *= resolution.<span class="fu">x</span> / resolution.<span class="fu">y</span>;
+  <span class="dt">float</span> l = <span class="fl">0.2</span> * <span class="bu">length</span>(p);
+  <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">3</span>; i++) {
+    z += <span class="fl">0.07</span>;
+    uv += p / l * (<span class="bu">sin</span>(z) + <span class="fl">1.0</span>) * <span class="bu">abs</span>(<span class="bu">sin</span>(l * <span class="fl">9.0</span> - z * <span class="fl">2.0</span>));
+    c[i] = <span class="fl">0.01</span> / <span class="bu">length</span>(<span class="bu">abs</span>(<span class="bu">mod</span>(uv, <span class="fl">1.0</span>) - <span class="fl">0.5</span>));
+  }
+  <span class="dt">float</span> intensity = <span class="fu">texture2D</span>(spectrum, <span class="dt">vec2</span>(l, <span class="fl">0.5</span>)).<span class="fu">x</span>;
+  <span class="va">gl_FragColor</span> = <span class="dt">vec4</span>(c / l * intensity, time);
+}</code></pre></div>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">createTexture</span>(gl) <span class="op">{</span>
+  <span class="kw">const</span> texture <span class="op">=</span> <span class="va">gl</span>.<span class="at">createTexture</span>()
+  <span class="va">gl</span>.<span class="at">bindTexture</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> texture)
+  <span class="va">gl</span>.<span class="at">texParameteri</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">TEXTURE_MIN_FILTER</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">LINEAR</span>)
+  <span class="va">gl</span>.<span class="at">texParameteri</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">TEXTURE_WRAP_S</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">CLAMP_TO_EDGE</span>)
+  <span class="va">gl</span>.<span class="at">texParameteri</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">TEXTURE_WRAP_T</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">CLAMP_TO_EDGE</span>)
+  <span class="cf">return</span> texture
+<span class="op">}</span>
+
+<span class="kw">function</span> <span class="at">copyAudioDataToTexture</span>(gl<span class="op">,</span> audioData<span class="op">,</span> textureArray) <span class="op">{</span>
+  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="va">audioData</span>.<span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span>
+    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">0</span>] <span class="op">=</span> audioData[i] <span class="co">// R</span>
+    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> audioData[i] <span class="co">// G</span>
+    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">2</span>] <span class="op">=</span> audioData[i] <span class="co">// B</span>
+    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">3</span>] <span class="op">=</span> <span class="dv">255</span>          <span class="co">// A</span>
+  <span class="op">}</span>
+  <span class="va">gl</span>.<span class="at">texImage2D</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">RGBA</span><span class="op">,</span> <span class="va">audioData</span>.<span class="at">length</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">RGBA</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">UNSIGNED_BYTE</span><span class="op">,</span> textureArray)
+<span class="op">}</span></code></pre></div>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> fragCanvas <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'fragment'</span>)
+<span class="va">fragCanvas</span>.<span class="at">width</span> <span class="op">=</span> <span class="va">fragCanvas</span>.<span class="va">parentNode</span>.<span class="at">offsetWidth</span>
+<span class="va">fragCanvas</span>.<span class="at">height</span> <span class="op">=</span> <span class="va">fragCanvas</span>.<span class="at">width</span> <span class="op">*</span> <span class="fl">0.75</span>
+<span class="kw">const</span> gl <span class="op">=</span> <span class="va">fragCanvas</span>.<span class="at">getContext</span>(<span class="st">'webgl'</span>) <span class="op">||</span> <span class="va">fragCanvas</span>.<span class="at">getContext</span>(<span class="st">'experimental-webgl'</span>)
+<span class="kw">const</span> vertexShaderSrc <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'vertex-shader'</span>).<span class="at">textContent</span>
+<span class="kw">const</span> fragmentShaderSrc <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'fragment-shader'</span>).<span class="at">textContent</span>
+<span class="kw">const</span> fragShader <span class="op">=</span> <span class="at">createShader</span>(gl<span class="op">,</span> vertexShaderSrc<span class="op">,</span> fragmentShaderSrc)</code></pre></div>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> fragPosition <span class="op">=</span> <span class="va">gl</span>.<span class="at">getAttribLocation</span>(fragShader<span class="op">,</span> <span class="st">'position'</span>)
+<span class="va">gl</span>.<span class="at">enableVertexAttribArray</span>(fragPosition)
+<span class="kw">const</span> fragTime <span class="op">=</span> <span class="va">gl</span>.<span class="at">getUniformLocation</span>(fragShader<span class="op">,</span> <span class="st">'time'</span>)
+<span class="va">gl</span>.<span class="at">uniform1f</span>(fragTime<span class="op">,</span> <span class="va">audioContext</span>.<span class="at">currentTime</span>)
+<span class="kw">const</span> fragResolution <span class="op">=</span> <span class="va">gl</span>.<span class="at">getUniformLocation</span>(fragShader<span class="op">,</span> <span class="st">'resolution'</span>)
+<span class="va">gl</span>.<span class="at">uniform2f</span>(fragResolution<span class="op">,</span> <span class="va">fragCanvas</span>.<span class="at">width</span><span class="op">,</span> <span class="va">fragCanvas</span>.<span class="at">height</span>)
+<span class="kw">const</span> fragSpectrumArray <span class="op">=</span> <span class="kw">new</span> <span class="at">Uint8Array</span>(<span class="dv">4</span> <span class="op">*</span> <span class="va">spectrum</span>.<span class="at">length</span>)
+<span class="kw">const</span> fragSpectrum <span class="op">=</span> <span class="at">createTexture</span>(gl)</code></pre></div>
+
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="at">initQuad</span>(gl)
+
+<span class="op">;</span>(<span class="kw">function</span> <span class="at">renderFragment</span>() <span class="op">{</span>
+  <span class="at">requestAnimationFrame</span>(renderFragment)
+  <span class="va">gl</span>.<span class="at">uniform1f</span>(fragTime<span class="op">,</span> <span class="va">audioContext</span>.<span class="at">currentTime</span>)
+  <span class="at">copyAudioDataToTexture</span>(gl<span class="op">,</span> spectrum<span class="op">,</span> fragSpectrumArray)
+  <span class="at">renderQuad</span>(gl)
+<span class="op">}</span>)()</code></pre></div>
+
+<p>
+  <canvas id="fragment"></canvas>
+</p>
+<p>
+  <button class="play-btn">Saw Sweep</button>
+  <button class="song-btn">Play Song</button>
+</p>
+
+<script src="../static/js/build-music-visualizer/build-music-visualizer-web-audio-api.js"></script>
+
+</article>
+
+
+		</div>
+	</body>
+</html>

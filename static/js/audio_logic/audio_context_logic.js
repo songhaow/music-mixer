@@ -1,3 +1,4 @@
+
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 export const audioCtx = new AudioContext();
 // const track1Element = document.querySelector('#track1');
@@ -30,7 +31,7 @@ export class TrackAudioManager {
            trackName: '01-SW-042017.mp3',
            buffer: null,
            audioSource: null,
-           beat_list: [],
+           beat_list: null,
            bpm: 95.23,
          },
          {
@@ -70,7 +71,7 @@ export class TrackAudioManager {
       playOffsetSec = 0;
     }
     this.songBufferInfo[i]['audioSource'].start(0, playOffsetSec, duration);
-    // this.initMp3Player(i);
+    this.frequencyDemo(i);
   }
 
   stopTrack (i) {
@@ -89,8 +90,12 @@ export class TrackAudioManager {
   }
 
   frequencyDemo(i){
+      document.getElementById('audio_box');
       var audio = new Audio();
-      audio.src = '../static/source_audio/01-SW-042017.mp3';
+      // var audio01 = document.getElementById('audio_box');
+      // console.log('audio01:', audio01);
+      // if(audio01 != null){audio01.removeChild(audio);};
+      audio.src = '../static/source_audio/'+this.songBufferInfo[i].trackName;
       audio.controls = true;
       document.getElementById('audio_box').appendChild(audio);
       analyser = audioCtx.createAnalyser();
@@ -120,19 +125,3 @@ function frameLooper(){
       ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
     }
 }
-// frameLooper() animates any style of graphics you wish to the audio frame
-// Looping at the default frame rare that the browser provides(approx. 60 FPS)
-// function frameLooper(){
-//     window.requestAnimationFrame(frameLooper);
-//     fbc_array = new Uint8Array(analyser.frequencyBinCount);
-//     analyser.getByteFrequencyData(fbc_array);
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     ctx.fillStyle = '#00CCFF';
-//     bars = 100;
-//     for (i = 0; i < bars; i++){
-//       bar_x = i * 3;
-//       bar_width = 2;
-//       bar_height = -(fbc_array[i]/2);
-//       ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
-//     }
-// }

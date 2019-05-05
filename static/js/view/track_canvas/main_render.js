@@ -1,7 +1,4 @@
 import {TimeUtil} from '/static/js/view/utils/time_util.js';
-import {audioCtx, TrackAudioManager} from '/static/js/audio_logic/audio_context_logic.js';
-
-var trackAudioManager = new TrackAudioManager();
 
 export const PositionObj = {
   track1Start:0, // track1 starting coordinate (track1 not move for now)
@@ -16,31 +13,24 @@ export const PositionObj = {
 }
 
 export const TrackCanvasInterface = {
-  initialRender(f1,f2) {
+  initialRender(f1, bpm1, list1, f2, bpm2, list2) {
 
     var trackInputInfoList = [
       {
-        id: 'track1',
         color: '#FF5722',
         backgroundcolor: '#F2D7D5',
         fname: f1,
+        bpm: bpm1,
+        beat_list: list1
       },
       {
-        id: 'track2',
         color: 'green',
         backgroundcolor: '#D1F2EB',
         fname: f2,
+        bpm: bpm2,
+        beat_list: list2
       },
     ];
-
- // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].bpm);
- // console.log('renderInfo: ', trackAudioManager.songBufferInfo[0].beat_list);
- // change filenames from mp3 into txt
- trackInputInfoList.forEach(function(t, i) {
-    var tempfilename = t.fname;
-    var name = tempfilename.split(".")[0];
-    trackInputInfoList[i].fname = '/static/source_audio/'+name+'.txt';
-  });
 
     var svg = d3.select('svg');
 
@@ -113,8 +103,12 @@ function bindEventHandlers(mainSvgEl) {
     playCursorRect.attr('x', PositionObj.playCursor);
     PositionObj.play1X=(PositionObj.playCursor-PositionObj.track1Start)/PositionObj.play1Scale;
     PositionObj.play2X=(PositionObj.playCursor-PositionObj.track2Start)/PositionObj.play2Scale;
-    console.log('playCursor: ', PositionObj.playCursor);
-    console.log('play1X, play2X: ', PositionObj.play1X, PositionObj.play2X);
+    var cursorX = PositionObj.playCursor;
+    var play1X = PositionObj.play1X;
+    var play2X = PositionObj.play2X;
+    play1X = play1X.toFixed(2);
+    play2X = play2X.toFixed(2);
+    console.log('playCursor, play1X, play2X: ', cursorX +', '+ play1X +', '+ play2X);
   });
 
   // Zoom event handler bindings
@@ -144,7 +138,7 @@ function rerenderTracks(svg, trackInputInfoList) {
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
     renderAllTrackInfo(
       i, htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color,
-      bckgdcolor, w, trackInputInfoList, trackAudioManager);
+      bckgdcolor, w, trackInputInfoList);
   });
 }
 
@@ -157,18 +151,16 @@ function rerenderTracks(svg, trackInputInfoList) {
  * @param {Number}    trackBottomY: Y coordinate on SVG canvas for bottom of track
  * @param {String}    color: Color to render track in
  */
+
 function renderAllTrackInfo(i,htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY,
-  color, bckgdcolor, w, trackInputInfoList, trackAudioManager){
-    // console.log('bpm00: ', trackAudioManager.songBufferInfo[i].bpm);
-    // console.log('beatList00: ', trackAudioManager.songBufferInfo[i].beat_list);
-    d3.json(fname, function(error, data) {
-    var bpm01 = data.bpm;
-    bpm01 = d3.format(".0f")(bpm01)
-    var beatListArray = data.beat_list;
+  color, bckgdcolor, w, trackInputInfoList){
+
+    var bpm01 = trackInputInfoList[i].bpm;
+    bpm01 = d3.format(".0f")(bpm01);
+    var beatListArray = trackInputInfoList[i].beat_list;
     var xOffset = d3.min(beatListArray);
     var xMin = 0;
     var xMax = d3.max(beatListArray);
-    // console.log('SongLength:', xMax);
     var axisScale = d3.scaleLinear()
                       .domain([xMin,xMax])
                       .range([0,w]);
@@ -210,7 +202,6 @@ function renderAllTrackInfo(i,htmlElementId, trackDisplayGroup, fname, trackTopY
     renderDraggableTrack(
       htmlElementId, trackLinesGroup, beatListArray, color, bckgdcolor,
       trackTopY, trackBottomY, xScale, xAxis, xStart,i,xOffset);
-  });
 }
 
 /**
@@ -266,7 +257,6 @@ function renderDraggableTrack(
         .attr('y2', trackBottomY);
   beatLines.exit().remove();
 
-  // console.log('d[0]: ', beatListScaled[0]);
 }
 
 /**
@@ -297,7 +287,4 @@ function dragged() {
 function dragended(trackInputInfoList) {
   d3.select(this).classed("active", false);
   PositionObj.track2Start = PositionObj.track2Start + (d3.event.x - d3.event.subject.x);
-  // console.log('mouseDownX: ', d3.event.subject.x);
-  // console.log('mouseUpX: ',d3.event.x);
-  // console.table('track2Start-new:', PositionObj.track2Start);
 }

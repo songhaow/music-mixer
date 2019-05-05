@@ -37,7 +37,7 @@
 
     .myImg{
       flex:none;
-      width:150px;
+      width:100px;
       border-radius: 5px;
       padding-top: 5px;
       background: linear-gradient( white,rgb(50,50,50));
@@ -109,7 +109,7 @@
 
       <div class="grid-container">
         <div class="myImg">
-          <img id="myImg" src="static/source_audio/music-04.jpg" height="35">
+          <img id="myImg" src="static/source_audio/music-01.png" height="35">
         </div>
         <div class = "playbox">
           <button id='play1Button' title="Play track1"> Play track1 </button>
@@ -128,16 +128,18 @@
 
       <div class = "div03">
           <div class = "inputbox">
-            Load track01: <input id = "fname01" type="file" accept=".mp3"></input>
+            Load track01: <input id = "fname01" type="file" accept="mp3/m4a"></input>
           </div>
           <div class = "inputbox">
-            Load track2: <input id = "fname02" type="file" accept=".mp3"></input>
+            Load track2: <input id = "fname02" type="file" accept="mp3/m4a"></input>
           </div>
       </div>
 
       <div id = "freq_graph">
          <canvas id = "analyser_render"></canvas>
-         <div id = "audio_box"></div>
+         <div id = "audio_box">
+           <!-- <audio id = 'audio_box' controls></audio> -->
+         </div>
       </div>
 
     </div>
