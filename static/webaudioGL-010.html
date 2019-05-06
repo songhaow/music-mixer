@@ -7,8 +7,6 @@
 		<title>Build a Music Visualizer with the Web Audio API</title>
 		<meta name="description" content="Basics of music visualization using the Web Audio API.">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- <link rel="canonical" href="http://noisehack.com/build-music-visualizer-web-audio-api/"> -->
-		<!-- <link href="//fonts.googleapis.com/css?family=Iceberg|Source+Sans+Pro:400,700,400italic,700italic" rel="stylesheet" type="text/css"> -->
 		<link rel="stylesheet" href="../static/css/build-music-visualizer.css">
 
 		<script>
@@ -16,322 +14,298 @@
 		   ga('create', 'UA-15976986-14', 'auto');
 		   ga('send', 'pageview');
 		</script>
-		<!-- <script async src="https://www.google-analytics.com/analytics.js"></script> -->
-    <script src="../static/js/build-music-visualizer/jquery.min.js"></script>
-    <script src="../static/js/build-music-visualizer/build-music-visualizer-web-audio.js"></script>
+    <script src = "../static/js/build-music-visualizer/jquery.min.js"></script>
+
+		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio-api.js"></script>
+		<script src = "../static/js/build-music-visualizer/build-music-visualizer-render.js"></script>
+		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio.js"></script>
 </head>
-<hr>
+
 <body>
   <div id="container">
     <article>
-<!-- more-->
-<h5>(1)</h5>
-<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> analyser <span class="op">=</span> <span class="va">audioContext</span>.<span class="at">createAnalyser</span>()
-<span class="va">masterGain</span>.<span class="at">connect</span>(analyser)
-<span class="kw">const</span> waveform <span class="op">=</span> <span class="kw">new</span> <span class="at">Float32Array</span>(<span class="va">analyser</span>.<span class="at">frequencyBinCount</span>)
-<span class="va">analyser</span>.<span class="at">getFloatTimeDomainData</span>(waveform)</code></pre></div>
-<!-- <script>
-  const analyser = audioContext.createAnalyser();
-  masterGain.connect(analyser);
-  const waveform = new Float32Array(analyser.frequencyBinCount);
-  analyser.getFloatTimeDomainData(waveform);
-</script> -->
 
-<h5>(2-script)</h5>
-<!-- <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">;</span>(<span class="kw">function</span> <span class="at">updateWaveform</span>() <span class="op">{</span>
-  <span class="at">requestAnimationFrame</span>(updateWaveform)
-  <span class="va">analyser</span>.<span class="at">getFloatTimeDomainData</span>(waveform)
-<span class="op">}</span>)()</code></pre></div> -->
-<script>
-;(function updateWaveform() {
-  requestAnimationFrame(updateWaveform);
-  analyser.getFloatTimeDomainData(waveform);
-})()
-</script>
+			<div class="sourceCode" id="vertex-shader">
+				<script>
+					attribute vec2 position;
+					void main(void) {
+						gl_Position = vec4(position, 0, 1);
+					}
+				</script>
+			</div>
 
-<h5>(3)</h5>
-<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> spectrum <span class="op">=</span> <span class="kw">new</span> <span class="at">Uint8Array</span>(<span class="va">analyser</span>.<span class="at">frequencyBinCount</span>)
-<span class="op">;</span>(<span class="kw">function</span> <span class="at">updateSpectrum</span>() <span class="op">{</span>
-  <span class="at">requestAnimationFrame</span>(updateSpectrum)
-  <span class="va">analyser</span>.<span class="at">getByteFrequencyData</span>(spectrum)
-<span class="op">}</span>)()</code></pre></div>
-<!-- <script>
-  const analyser = audioContext.createAnalyser();
-  masterGain.connect(analyser);
-  const waveform = new Float32Array(analyser.frequencyBinCount);
-  analyser.getFloatTimeDomainData(waveform);
-</script> -->
 
-<h5>(4-script)</h5>
-<!-- <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> spectroCanvas <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'spectrogram'</span>)
-<span class="va">spectroCanvas</span>.<span class="at">width</span> <span class="op">=</span> <span class="va">spectrum</span>.<span class="at">length</span>
-<span class="va">spectroCanvas</span>.<span class="at">height</span> <span class="op">=</span> <span class="dv">200</span>
-<span class="kw">const</span> spectroContext <span class="op">=</span> <span class="va">spectroCanvas</span>.<span class="at">getContext</span>(<span class="st">'2d'</span>)
-<span class="kw">let</span> spectroOffset <span class="op">=</span> <span class="dv">0</span> -->
-<script>
-  const spectroCanvas = document.getElementById('spectrogram');
-  spectroCanvas.width = spectrum.length;
-  spectroCanvas.height = 200;
-  const spectroContext = spectroCanvas.getContext('2d');
-  let spectroOffset = 0;
-</script>
+			<div class="sourceCode" id="fragment-shader">
+				<script>
+					precision mediump float;
+					uniform float time;
+					uniform vec2 resolution;
+					uniform sampler2D spectrum;
 
-<h5>(5-0)</h5>
-<!-- <div><span class="op">;</span>(<span class="kw">function</span> <span class="at">drawSpectrogram</span>() <span class="op">{</span>
-  <span class="at">requestAnimationFrame</span>(drawSpectrogram)
-  <span class="kw">const</span> slice <span class="op">=</span> <span class="va">spectroContext</span>.<span class="at">getImageData</span>(<span class="dv">0</span><span class="op">,</span> spectroOffset<span class="op">,</span> <span class="va">spectroCanvas</span>.<span class="at">width</span><span class="op">,</span> <span class="dv">1</span>)
-  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="va">spectrum</span>.<span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span>
-    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">0</span>] <span class="op">=</span> spectrum[i] <span class="co">// R</span>
-    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> spectrum[i] <span class="co">// G</span>
-    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">2</span>] <span class="op">=</span> spectrum[i] <span class="co">// B</span>
-    <span class="va">slice</span>.<span class="at">data</span>[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">3</span>] <span class="op">=</span> <span class="dv">255</span>         <span class="co">// A</span>
-  <span class="op">}</span>
-  <span class="va">spectroContext</span>.<span class="at">putImageData</span>(slice<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> spectroOffset)
-  spectroOffset <span class="op">+=</span> <span class="dv">1</span>
-  spectroOffset <span class="op">%=</span> <span class="va">spectroCanvas</span>.<span class="at">height</span>
-<span class="op">}</span>)()</code></pre></div> -->
+					void main(void) {
+						vec3 c;
+						float z = 0.1 * time;
+						vec2 uv = gl_FragCoord.xy / resolution;
+						vec2 p = uv - 0.5;
+						p.x *= resolution.x / resolution.y;
+						float l = 0.2 * length(p);
+						for (int i = 0; i < 3; i++) {
+							z += 0.07;
+							uv += p / l * (sin(z) + 1.0) * abs(sin(l * 9.0 - z * 2.0));
+							c[i] = 0.01 / length(abs(mod(uv, 1.0) - 0.5));
+						}
+						float intensity = texture2D(spectrum, vec2(l, 0.5)).x;
+						gl_FragColor = vec4(c / l * intensity, time);
+					}
+				</script>
+			</div>
 
-<h5>(6-script)</h5>
-<!-- <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">initQuad</span>(gl) <span class="op">{</span>
-  <span class="kw">const</span> vbo <span class="op">=</span> <span class="va">gl</span>.<span class="at">createBuffer</span>()
-  <span class="va">gl</span>.<span class="at">bindBuffer</span>(<span class="va">gl</span>.<span class="at">ARRAY_BUFFER</span><span class="op">,</span> vbo)
-  <span class="kw">const</span> vertices <span class="op">=</span> <span class="kw">new</span> <span class="at">Float32Array</span>([<span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span>])
-  <span class="va">gl</span>.<span class="at">bufferData</span>(<span class="va">gl</span>.<span class="at">ARRAY_BUFFER</span><span class="op">,</span> vertices<span class="op">,</span> <span class="va">gl</span>.<span class="at">STATIC_DRAW</span>)
-  <span class="va">gl</span>.<span class="at">vertexAttribPointer</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">FLOAT</span><span class="op">,</span> <span class="kw">false</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span>)
-<span class="op">}</span>
+	<pre class="sourceCode javascript">
+		<code class="sourceCode javascript">
+			<span class="kw">const</span> analyser
+			<span class="op">=</span>
+			<span class="va">audioContext</span>.
+			<span class="at">createAnalyser</span>()
+      <span class="va">masterGain</span>.
+			<span class="at">connect</span>(analyser)
+      <span class="kw">const</span> waveform
+	    <span class="op">=</span>
+	    <span class="kw">new</span>
+	    <span class="at">Float32Array</span>(
+			<span class="va">analyser</span>.
+			<span class="at">frequencyBinCount</span>)
+      <span class="va">analyser</span>.
+			<span class="at">getFloatTimeDomainData</span>(waveform)
+   </code>
+  </pre>
+  <!-- <script> // the replace js code for above section
+    const analyser = audioContext.createAnalyser();
+    masterGain.connect(analyser);
+    const waveform = new Float32Array(analyser.frequencyBinCount);
+    analyser.getFloatTimeDomainData(waveform);
+  </script> -->
 
-<span class="kw">function</span> <span class="at">renderQuad</span>(gl) <span class="op">{</span>
-  <span class="va">gl</span>.<span class="at">drawArrays</span>(<span class="va">gl</span>.<span class="at">TRIANGLE_STRIP</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">4</span>)
-<span class="op">}</span></code></pre></div> -->
-<script>
-  function initQuad(gl) {
-    const vbo = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
-    const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1])
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)
-  }
+	<!-- <script> // the replace js code for all
+			const analyser = audioContext.createAnalyser();
+			masterGain.connect(analyser);
+			const waveform = new Float32Array(analyser.frequencyBinCount);
+			analyser.getFloatTimeDomainData(waveform);
+		const spectrum = new Uint8Array(analyser.frequencyBinCount);
+	  function updateSpectrum() {
+	    requestAnimationFrame(updateSpectrum);
+	    analyser.getByteFrequencyData(spectrum);
+	  }
 
-  function renderQuad(gl) {
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-  }
-</script>
 
-<h5>(7-script)</h5>
-<!-- <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">createShader</span>(gl<span class="op">,</span> vertexShaderSrc<span class="op">,</span> fragmentShaderSrc) <span class="op">{</span>
-  <span class="kw">const</span> vertexShader <span class="op">=</span> <span class="va">gl</span>.<span class="at">createShader</span>(<span class="va">gl</span>.<span class="at">VERTEX_SHADER</span>)
-  <span class="va">gl</span>.<span class="at">shaderSource</span>(vertexShader<span class="op">,</span> vertexShaderSrc)
-  <span class="va">gl</span>.<span class="at">compileShader</span>(vertexShader)
-  <span class="cf">if</span> (<span class="op">!</span><span class="va">gl</span>.<span class="at">getShaderParameter</span>(vertexShader<span class="op">,</span> <span class="va">gl</span>.<span class="at">COMPILE_STATUS</span>)) <span class="op">{</span>
-    <span class="cf">throw</span> <span class="kw">new</span> <span class="at">Error</span>(<span class="va">gl</span>.<span class="at">getShaderInfoLog</span>(vertexShader))
-  <span class="op">}</span>
+		const fragCanvas = document.getElementById('fragment');
+		fragCanvas.width = fragCanvas.parentNode.offsetWidth;
+		fragCanvas.height = fragCanvas.width * 0.75;
+		const gl = fragCanvas.getContext('webgl') || fragCanvas.getContext('experimental-webgl');
+		const vertexShaderSrc = document.getElementById('vertex-shader').textContent;
+		const fragmentShaderSrc = document.getElementById('fragment-shader').textContent;
+		const fragShader = createShader(gl, vertexShaderSrc, fragmentShaderSrc);
 
-  <span class="kw">const</span> fragmentShader <span class="op">=</span> <span class="va">gl</span>.<span class="at">createShader</span>(<span class="va">gl</span>.<span class="at">FRAGMENT_SHADER</span>)
-  <span class="va">gl</span>.<span class="at">shaderSource</span>(fragmentShader<span class="op">,</span> fragmentShaderSrc)
-  <span class="va">gl</span>.<span class="at">compileShader</span>(fragmentShader)
-  <span class="cf">if</span> (<span class="op">!</span><span class="va">gl</span>.<span class="at">getShaderParameter</span>(fragmentShader<span class="op">,</span> <span class="va">gl</span>.<span class="at">COMPILE_STATUS</span>)) <span class="op">{</span>
-    <span class="cf">throw</span> <span class="kw">new</span> <span class="at">Error</span>(<span class="va">gl</span>.<span class="at">getShaderInfoLog</span>(fragmentShader))
-  <span class="op">}</span>
 
-  <span class="kw">const</span> shader <span class="op">=</span> <span class="va">gl</span>.<span class="at">createProgram</span>()
-  <span class="va">gl</span>.<span class="at">attachShader</span>(shader<span class="op">,</span> vertexShader)
-  <span class="va">gl</span>.<span class="at">attachShader</span>(shader<span class="op">,</span> fragmentShader)
-  <span class="va">gl</span>.<span class="at">linkProgram</span>(shader)
-  <span class="va">gl</span>.<span class="at">useProgram</span>(shader)
-  <span class="cf">return</span> shader
-  <span class="op">}</span></code></pre></div> -->
-	<script>
-	  function createShader(gl, vertexShaderSrc, fragmentShaderSrc) {
-    const vertexShader = gl.createShader(gl.VERTEX_SHADER)
-    gl.shaderSource(vertexShader, vertexShaderSrc)
-    gl.compileShader(vertexShader)
-    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-      throw new Error(gl.getShaderInfoLog(vertexShader))
-    }
+		const fragPosition = gl.getAttribLocation(fragShader, 'position');
+		gl.enableVertexAttribArray(fragPosition);
+		const fragTime = gl.getUniformLocation(fragShader, 'time');
+		gl.uniform1f(fragTime, audioContext.currentTime);
+		const fragResolution = gl.getUniformLocation(fragShader, 'resolution');
+		gl.uniform2f(fragResolution, fragCanvas.width, fragCanvas.height);
+		const fragSpectrumArray = new Uint8Array(4 * spectrum.length);
+		const fragSpectrum = createTexture(gl);
 
-    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-    gl.shaderSource(fragmentShader, fragmentShaderSrc)
-    gl.compileShader(fragmentShader)
-    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-      throw new Error(gl.getShaderInfoLog(fragmentShader))
-    }
 
-    const shader = gl.createProgram()
-    gl.attachShader(shader, vertexShader)
-    gl.attachShader(shader, fragmentShader)
-    gl.linkProgram(shader)
-    gl.useProgram(shader)
-    return shader
-    }
-	</script>
+		initQuad(gl);
+		function renderFragment() {
+			requestAnimationFrame(renderFragment);
+			gl.uniform1f(fragTime, audioContext.currentTime);
+			copyAudioDataToTexture(gl, spectrum, fragSpectrumArray);
+			renderQuad(gl)
+		}
+  </script> -->
 
-<h5>(8)</h5>
-<div class="sourceCode" id="vertex-shader"><pre class="sourceCode glsl"><code class="sourceCode glsl"><span class="dt">attribute</span> <span class="dt">vec2</span> position;
+	<pre class="sourceCode javascript">
+		<code class="sourceCode javascript">
+			<span class="kw">const</span> spectrum
+			<span class="op">=</span>
+			<span class="kw">new</span>
+			<span class="at">Uint8Array</span>(
+			<span class="va">analyser</span>.
+			<span class="at">frequencyBinCount</span>)
+      <span class="op">;</span>(
+			<span class="kw">function</span>
+		  <span class="at">updateSpectrum</span>()
+			<span class="op">{</span>
+      <span class="at">requestAnimationFrame</span>(updateSpectrum)
+      <span class="va">analyser</span>.
+			<span class="at">getByteFrequencyData</span>(spectrum)
+      <span class="op">}</span>)()
+		</code>
+	</pre>
+	<!-- <script> // the replace js code for above section
+	  const spectrum = new Uint8Array(analyser.frequencyBinCount);
+	  function updateSpectrum() {
+	    requestAnimationFrame(updateSpectrum);
+	    analyser.getByteFrequencyData(spectrum);
+	  }
+	</script> -->
 
-<span class="dt">void</span> <span class="fu">main</span>(<span class="dt">void</span>) {
-  <span class="bu">gl_Position</span> = <span class="dt">vec4</span>(position, <span class="dv">0</span>, <span class="dv">1</span>);
-}</code></pre></div>
-<!-- <script>
-  attribute vec2 position;
-  void main(void) {
-    gl_Position = vec4(position, 0, 1);
-  }
-</script> -->
+	<pre class="sourceCode javascript">
+		<code class="sourceCode javascript">
+			<span class="kw">const</span> fragCanvas
+			<span class="op">=</span>
+			<span class="va">document</span>.
+			<span class="at">getElementById</span>(
+			<span class="st">'fragment'</span>)
+      <span class="va">fragCanvas</span>.
+			<span class="at">width</span>
+			<span class="op">=</span>
+			<span class="va">fragCanvas</span>.
+			<span class="va">parentNode</span>.
+			<span class="at">offsetWidth</span>
+      <span class="va">fragCanvas</span>.
+			<span class="at">height</span>
+			<span class="op">=</span>
+			<span class="va">fragCanvas</span>.
+			<span class="at">width</span>
+			<span class="op">*</span>
+			<span class="fl">0.75</span>
+      <span class="kw">const</span> gl
+			<span class="op">=</span>
+			<span class="va">fragCanvas</span>.
+			<span class="at">getContext</span>(
+			<span class="st">'webgl'</span>)
+			<span class="op">||</span>
+			<span class="va">fragCanvas</span>.
+			<span class="at">getContext</span>(
+			<span class="st">'experimental-webgl'</span>)
+      <span class="kw">const</span> vertexShaderSrc
+			<span class="op">=</span>
+			<span class="va">document</span>.
+			<span class="at">getElementById</span>(
+			<span class="st">'vertex-shader'</span>).
+			<span class="at">textContent</span>
+      <span class="kw">const</span> fragmentShaderSrc
+			<span class="op">=</span> <span class="va">document</span>.
+			<span class="at">getElementById</span>(
+			<span class="st">'fragment-shader'</span>).
+			<span class="at">textContent</span>
+      <span class="kw">const</span> fragShader
+			<span class="op">=</span> <span class="at">createShader</span>(gl
+			<span class="op">,</span> vertexShaderSrc<span class="op">,
+			</span> fragmentShaderSrc)
+    </code>
+  </pre>
+	<!-- <script> // the replace js code for above section
+	  const fragCanvas = document.getElementById('fragment')
+	  fragCanvas.width = fragCanvas.parentNode.offsetWidth
+	  fragCanvas.height = fragCanvas.width * 0.75
+	  const gl = fragCanvas.getContext('webgl') || fragCanvas.getContext('experimental-webgl')
+	  const vertexShaderSrc = document.getElementById('vertex-shader').textContent
+	  const fragmentShaderSrc = document.getElementById('fragment-shader').textContent
+	  const fragShader = createShader(gl, vertexShaderSrc, fragmentShaderSrc)
+	</script> -->
 
-<h5>(9)</h5>
-<div class="sourceCode" id="fragment-shader"><pre class="sourceCode glsl"><code class="sourceCode glsl">precision mediump <span class="dt">float</span>;
 
-<span class="kw">uniform</span> <span class="dt">float</span> time;
-<span class="kw">uniform</span> <span class="dt">vec2</span> resolution;
-<span class="kw">uniform</span> <span class="dt">sampler2D</span> spectrum;
+	<pre class="sourceCode javascript">
+		<code class="sourceCode javascript">
+			<span class="kw">const</span> fragPosition
+			<span class="op">=</span>
+			<span class="va">gl</span>.
+			<span class="at">getAttribLocation</span>(fragShader
+		  <span class="op">,</span>
+			<span class="st">'position'</span>)
+      <span class="va">gl</span>.
+			<span class="at">enableVertexAttribArray</span>(fragPosition)
+      <span class="kw">const</span> fragTime
+			<span class="op">=</span>
+			<span class="va">gl</span>.
+			<span class="at">getUniformLocation</span>(fragShader
+		  <span class="op">,</span>
+		  <span class="st">'time'</span>)
+      <span class="va">gl</span>.
+			<span class="at">uniform1f</span>(fragTime
+			<span class="op">,</span>
+			<span class="va">audioContext</span>.
+			<span class="at">currentTime</span>)
+      <span class="kw">const</span> fragResolution
+			<span class="op">=</span>
+			<span class="va">gl</span>.
+			<span class="at">getUniformLocation</span>(fragShader
+		  <span class="op">,</span>
+			<span class="st">'resolution'</span>)
+      <span class="va">gl</span>.
+			<span class="at">uniform2f</span>(fragResolution
+			<span class="op">,</span>
+			<span class="va">fragCanvas</span>.
+			<span class="at">width</span>
+		  <span class="op">,</span>
+			<span class="va">fragCanvas</span>.
+			<span class="at">height</span>)
+      <span class="kw">const</span> fragSpectrumArray
+			<span class="op">=</span>
+			<span class="kw">new</span>
+			<span class="at">Uint8Array</span>(
+			<span class="dv">4</span>
+			<span class="op">*</span>
+			<span class="va">spectrum</span>.
+			<span class="at">length</span>)
+      <span class="kw">const</span> fragSpectrum
+			<span class="op">=</span>
+			<span class="at">createTexture</span>(gl)
+    </code>
+  </pre>
+	<!-- <script>  // the replace js code for above section
+	  const fragPosition = gl.getAttribLocation(fragShader, 'position');
+	  gl.enableVertexAttribArray(fragPosition);
+	  const fragTime = gl.getUniformLocation(fragShader, 'time');
+	  gl.uniform1f(fragTime, audioContext.currentTime);
+	  const fragResolution = gl.getUniformLocation(fragShader, 'resolution');
+	  gl.uniform2f(fragResolution, fragCanvas.width, fragCanvas.height);
+	  const fragSpectrumArray = new Uint8Array(4 * spectrum.length);
+	  const fragSpectrum = createTexture(gl);
+	</script> -->
 
-<span class="dt">void</span> <span class="fu">main</span>(<span class="dt">void</span>) {
-  <span class="dt">vec3</span> c;
-  <span class="dt">float</span> z = <span class="fl">0.1</span> * time;
-  <span class="dt">vec2</span> uv = <span class="bu">gl_FragCoord</span>.<span class="fu">xy</span> / resolution;
-  <span class="dt">vec2</span> p = uv - <span class="fl">0.5</span>;
-  p.<span class="fu">x</span> *= resolution.<span class="fu">x</span> / resolution.<span class="fu">y</span>;
-  <span class="dt">float</span> l = <span class="fl">0.2</span> * <span class="bu">length</span>(p);
-  <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">3</span>; i++) {
-    z += <span class="fl">0.07</span>;
-    uv += p / l * (<span class="bu">sin</span>(z) + <span class="fl">1.0</span>) * <span class="bu">abs</span>(<span class="bu">sin</span>(l * <span class="fl">9.0</span> - z * <span class="fl">2.0</span>));
-    c[i] = <span class="fl">0.01</span> / <span class="bu">length</span>(<span class="bu">abs</span>(<span class="bu">mod</span>(uv, <span class="fl">1.0</span>) - <span class="fl">0.5</span>));
-  }
-  <span class="dt">float</span> intensity = <span class="fu">texture2D</span>(spectrum, <span class="dt">vec2</span>(l, <span class="fl">0.5</span>)).<span class="fu">x</span>;
-  <span class="va">gl_FragColor</span> = <span class="dt">vec4</span>(c / l * intensity, time);
-}</code></pre></div>
-<!-- <script>
-precision mediump float;
+	<pre class="sourceCode javascript">
+		<code class="sourceCode javascript">
+			<span class="at">initQuad</span>(gl)
+      <span class="op">;</span>(
+			<span class="kw">function</span>
+		  <span class="at">renderFragment</span>()
+			<span class="op">{</span>
+      <span class="at">requestAnimationFrame</span>(renderFragment)
+      <span class="va">gl</span>.
+			<span class="at">uniform1f</span>(fragTime
+		  <span class="op">,</span>
+			<span class="va">audioContext</span>.
+			<span class="at">currentTime</span>)
+      <span class="at">copyAudioDataToTexture</span>(gl
+			<span class="op">,</span> spectrum
+			<span class="op">,</span> fragSpectrumArray)
+      <span class="at">renderQuad</span>(gl)
+      <span class="op">}</span>)()
+    </code>
+  </pre>
+	<!-- <script> // the replace js code for above section -->
+	  <!-- initQuad(gl);
+		function renderFragment() {
+	    requestAnimationFrame(renderFragment);
+	    gl.uniform1f(fragTime, audioContext.currentTime);
+	    copyAudioDataToTexture(gl, spectrum, fragSpectrumArray);
+	    renderQuad(gl)
+	  }
+	</script> -->
 
-uniform float time;
-uniform vec2 resolution;
-uniform sampler2D spectrum;
+	  <p>
+	    <canvas id="fragment"></canvas>
+	  </p>
+	  <p>
+	    <button class="song-btn">Play Song</button>
+	  </p>
 
-void main(void) {
-  vec3 c;
-  float z = 0.1 * time;
-  vec2 uv = gl_FragCoord.xy / resolution;
-  vec2 p = uv - 0.5;
-  p.x *= resolution.x / resolution.y;
-  float l = 0.2 * length(p);
-  for (int i = 0; i < 3; i++) {
-    z += 0.07;
-    uv += p / l * (sin(z) + 1.0) * abs(sin(l * 9.0 - z * 2.0));
-    c[i] = 0.01 / length(abs(mod(uv, 1.0) - 0.5));
-  }
-  float intensity = texture2D(spectrum, vec2(l, 0.5)).x;
-  gl_FragColor = vec4(c / l * intensity, time);
-}
-</script> -->
-
-<h5>(10-script)</h5>
-<!-- <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">function</span> <span class="at">createTexture</span>(gl) <span class="op">{</span>
-  <span class="kw">const</span> texture <span class="op">=</span> <span class="va">gl</span>.<span class="at">createTexture</span>()
-  <span class="va">gl</span>.<span class="at">bindTexture</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> texture)
-  <span class="va">gl</span>.<span class="at">texParameteri</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">TEXTURE_MIN_FILTER</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">LINEAR</span>)
-  <span class="va">gl</span>.<span class="at">texParameteri</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">TEXTURE_WRAP_S</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">CLAMP_TO_EDGE</span>)
-  <span class="va">gl</span>.<span class="at">texParameteri</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">TEXTURE_WRAP_T</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">CLAMP_TO_EDGE</span>)
-  <span class="cf">return</span> texture
-<span class="op">}</span>
-
-<span class="kw">function</span> <span class="at">copyAudioDataToTexture</span>(gl<span class="op">,</span> audioData<span class="op">,</span> textureArray) <span class="op">{</span>
-  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="va">audioData</span>.<span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span>
-    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">0</span>] <span class="op">=</span> audioData[i] <span class="co">// R</span>
-    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> audioData[i] <span class="co">// G</span>
-    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">2</span>] <span class="op">=</span> audioData[i] <span class="co">// B</span>
-    textureArray[<span class="dv">4</span> <span class="op">*</span> i <span class="op">+</span> <span class="dv">3</span>] <span class="op">=</span> <span class="dv">255</span>          <span class="co">// A</span>
-  <span class="op">}</span>
-  <span class="va">gl</span>.<span class="at">texImage2D</span>(<span class="va">gl</span>.<span class="at">TEXTURE_2D</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">RGBA</span><span class="op">,</span> <span class="va">audioData</span>.<span class="at">length</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">RGBA</span><span class="op">,</span> <span class="va">gl</span>.<span class="at">UNSIGNED_BYTE</span><span class="op">,</span> textureArray)
-<span class="op">}</span></code></pre></div> -->
-<script>
-  function createTexture(gl) {
-    const texture = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, texture)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    return texture
-  }
-
-  function copyAudioDataToTexture(gl, audioData, textureArray) {
-    for (let i = 0; i < audioData.length; i++) {
-      textureArray[4 * i + 0] = audioData[i] // R
-      textureArray[4 * i + 1] = audioData[i] // G
-      textureArray[4 * i + 2] = audioData[i] // B
-      textureArray[4 * i + 3] = 255          // A
-    }
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, audioData.length, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, textureArray)
-  }
-</script>
-
-<h5>(11)</h5>
-<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> fragCanvas <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'fragment'</span>)
-<span class="va">fragCanvas</span>.<span class="at">width</span> <span class="op">=</span> <span class="va">fragCanvas</span>.<span class="va">parentNode</span>.<span class="at">offsetWidth</span>
-<span class="va">fragCanvas</span>.<span class="at">height</span> <span class="op">=</span> <span class="va">fragCanvas</span>.<span class="at">width</span> <span class="op">*</span> <span class="fl">0.75</span>
-<span class="kw">const</span> gl <span class="op">=</span> <span class="va">fragCanvas</span>.<span class="at">getContext</span>(<span class="st">'webgl'</span>) <span class="op">||</span> <span class="va">fragCanvas</span>.<span class="at">getContext</span>(<span class="st">'experimental-webgl'</span>)
-<span class="kw">const</span> vertexShaderSrc <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'vertex-shader'</span>).<span class="at">textContent</span>
-<span class="kw">const</span> fragmentShaderSrc <span class="op">=</span> <span class="va">document</span>.<span class="at">getElementById</span>(<span class="st">'fragment-shader'</span>).<span class="at">textContent</span>
-<span class="kw">const</span> fragShader <span class="op">=</span> <span class="at">createShader</span>(gl<span class="op">,</span> vertexShaderSrc<span class="op">,</span> fragmentShaderSrc)</code></pre></div>
-<!-- <script>
-  const fragCanvas = document.getElementById('fragment')
-  fragCanvas.width = fragCanvas.parentNode.offsetWidth
-  fragCanvas.height = fragCanvas.width * 0.75
-  const gl = fragCanvas.getContext('webgl') || fragCanvas.getContext('experimental-webgl')
-  const vertexShaderSrc = document.getElementById('vertex-shader').textContent
-  const fragmentShaderSrc = document.getElementById('fragment-shader').textContent
-  const fragShader = createShader(gl, vertexShaderSrc, fragmentShaderSrc)
-</script> -->
-
-<h5>(12)</h5>
-<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> fragPosition <span class="op">=</span> <span class="va">gl</span>.<span class="at">getAttribLocation</span>(fragShader<span class="op">,</span> <span class="st">'position'</span>)
-<span class="va">gl</span>.<span class="at">enableVertexAttribArray</span>(fragPosition)
-<span class="kw">const</span> fragTime <span class="op">=</span> <span class="va">gl</span>.<span class="at">getUniformLocation</span>(fragShader<span class="op">,</span> <span class="st">'time'</span>)
-<span class="va">gl</span>.<span class="at">uniform1f</span>(fragTime<span class="op">,</span> <span class="va">audioContext</span>.<span class="at">currentTime</span>)
-<span class="kw">const</span> fragResolution <span class="op">=</span> <span class="va">gl</span>.<span class="at">getUniformLocation</span>(fragShader<span class="op">,</span> <span class="st">'resolution'</span>)
-<span class="va">gl</span>.<span class="at">uniform2f</span>(fragResolution<span class="op">,</span> <span class="va">fragCanvas</span>.<span class="at">width</span><span class="op">,</span> <span class="va">fragCanvas</span>.<span class="at">height</span>)
-<span class="kw">const</span> fragSpectrumArray <span class="op">=</span> <span class="kw">new</span> <span class="at">Uint8Array</span>(<span class="dv">4</span> <span class="op">*</span> <span class="va">spectrum</span>.<span class="at">length</span>)
-<span class="kw">const</span> fragSpectrum <span class="op">=</span> <span class="at">createTexture</span>(gl)</code></pre></div>
-<!-- <script>
-  const fragPosition = gl.getAttribLocation(fragShader, 'position')
-  gl.enableVertexAttribArray(fragPosition)
-  const fragTime = gl.getUniformLocation(fragShader, 'time')
-  gl.uniform1f(fragTime, audioContext.currentTime)
-  const fragResolution = gl.getUniformLocation(fragShader, 'resolution')
-  gl.uniform2f(fragResolution, fragCanvas.width, fragCanvas.height)
-  const fragSpectrumArray = new Uint8Array(4 * spectrum.length)
-  const fragSpectrum = createTexture(gl)
-</script> -->
-
-<h5>(13)</h5>
-<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="at">initQuad</span>(gl)
-
-<span class="op">;</span>(<span class="kw">function</span> <span class="at">renderFragment</span>() <span class="op">{</span>
-  <span class="at">requestAnimationFrame</span>(renderFragment)
-  <span class="va">gl</span>.<span class="at">uniform1f</span>(fragTime<span class="op">,</span> <span class="va">audioContext</span>.<span class="at">currentTime</span>)
-  <span class="at">copyAudioDataToTexture</span>(gl<span class="op">,</span> spectrum<span class="op">,</span> fragSpectrumArray)
-  <span class="at">renderQuad</span>(gl)
-<span class="op">}</span>)()</code></pre></div>
-<!-- <script>
-  initQuad(gl)
-  ;(function renderFragment() {
-  requestAnimationFrame(renderFragment)
-  gl.uniform1f(fragTime, audioContext.currentTime)
-  copyAudioDataToTexture(gl, spectrum, fragSpectrumArray)
-  renderQuad(gl)
-  })()
-</script>  -->
-
-<p>
-  <canvas id="fragment"></canvas>
-</p>
-<p>
-  <button class="song-btn">Play Song</button>
-</p>
-
-    </article>
-  </div>
+	</article>
+</div>
 </body>
-
-<script src="../static/js/build-music-visualizer/build-music-visualizer-web-audio-api.js"></script>
 
 </html>

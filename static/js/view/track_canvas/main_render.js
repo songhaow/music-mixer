@@ -14,7 +14,6 @@ export const PositionObj = {
 
 export const TrackCanvasInterface = {
   initialRender(f1, bpm1, list1, f2, bpm2, list2) {
-
     var trackInputInfoList = [
       {
         color: '#FF5722',
@@ -33,7 +32,6 @@ export const TrackCanvasInterface = {
     ];
 
     var svg = d3.select('svg');
-
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
     bindEventHandlers(svg);

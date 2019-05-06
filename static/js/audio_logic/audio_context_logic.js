@@ -90,14 +90,12 @@ export class TrackAudioManager {
   }
 
   frequencyDemo(i){
-      document.getElementById('audio_box');
-      var audio = new Audio();
-      // var audio01 = document.getElementById('audio_box');
-      // console.log('audio01:', audio01);
+      var songName = '../static/source_audio/'+this.songBufferInfo[i].trackName;
+      var audio = new Audio(songName);
       // if(audio01 != null){audio01.removeChild(audio);};
-      audio.src = '../static/source_audio/'+this.songBufferInfo[i].trackName;
-      audio.controls = true;
       document.getElementById('audio_box').appendChild(audio);
+      // document.getElementById("audio_box").src = '../static/source_audio/'+this.songBufferInfo[i].trackName;
+      audio.controls = true;
       analyser = audioCtx.createAnalyser();
       canvas = document.getElementById('analyser_render');
       ctx = canvas.getContext('2d');
