@@ -84,6 +84,43 @@ void main(void) {
   gl_FragColor = vec4(c / l * intensity, time);
 }
 
+// https://www.shadertoy.com/view/MtlBDf
+// void mainImage( out vec4 fragColor, in vec2 fragCoord ){
+//     vec2 p = fragCoord/iResolution.xy - 0.5; // -0.5 -- 0.5
+//     p.x*=iResolution.x/iResolution.y;
+// 	float l = length(p);
+//     float t = iTime;
+//
+// 	vec3 c;
+//     for(int i=0;i<=2;i++) {
+// 		t+=.07;
+//         vec2 a = p + p/l * (1.+cos(t)) * abs(sin(l*9.-t*2.));
+// 		c[i]=.01/length( fract(0.5+a)-0.5 );
+//     }
+// 	fragColor=vec4(c/l,0.);
+// }
+
+// http://www.pouet.net/prod.php?which=57245
+// If you intend to reuse this shader, please add credits to 'Danilo Guanabara'
+// #define t iTime
+// #define r iResolution.xy
+//
+// void mainImage( out vec4 fragColor, in vec2 fragCoord ){
+// 	vec3 c;
+// 	float l,z=t;
+// 	for(int i=0;i<3;i++) {
+// 		vec2 uv,p=fragCoord.xy/r;
+// 		uv=p;
+// 		p-=.5;
+// 		p.x*=r.x/r.y;
+// 		z+=.07;
+// 		l=length(p);
+// 		uv+=p/l*(sin(z)+1.)*abs(sin(l*9.-z*2.));
+// 		c[i]=.01/length(abs(mod(uv,1.)-.5));
+// 	}
+// 	fragColor=vec4(c/l,t);
+// }
+
 function createTexture(gl) {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);

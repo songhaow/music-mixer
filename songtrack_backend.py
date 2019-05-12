@@ -4,7 +4,7 @@ from flask import request, Flask, render_template
 # domains to access resources of this application server
 # - read -- https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 from flask_cors import CORS
-from song_process import beatsbpm_txt
+# from song_process import beatsbpm_txt
 
 TEMPLATES_FOLDER = 'static'
 SOURCE_AUDIO_FOLDER = '../souce_audio'
@@ -32,12 +32,12 @@ def hello():
             "bpm": bpm,
         }
 """
-@app.route('/song-meta')
-def handle_song_meta():
-    song_name = request.args.get('songName')
-    path = 'static/source_audio/'
-    song_info_json = beatsbpm_txt(song_name, path)
-    return json.dumps(song_info_json)
+# @app.route('/song-meta')
+# def handle_song_meta():
+#     song_name = request.args.get('songName')
+#     path = 'static/source_audio/'
+#     song_info_json = beatsbpm_txt(song_name, path)
+#     return json.dumps(song_info_json)
 
 """This function stays like the old /song end point used to be. It
     simply returns the song content.
@@ -53,5 +53,5 @@ def handle_song_content():
     return content
 
 if __name__ == '__main__':
-    app.run(port=8000)
+    app.run(port=8080)
     # """rb=> read bitwize; fp=> file pointer"""

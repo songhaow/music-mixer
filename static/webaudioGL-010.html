@@ -15,7 +15,6 @@
 		   ga('send', 'pageview');
 		</script>
     <script src = "../static/js/build-music-visualizer/jquery.min.js"></script>
-
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio-api.js"></script>
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-render.js"></script>
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio.js"></script>
@@ -33,7 +32,6 @@
 					}
 				</script>
 			</div>
-
 
 			<div class="sourceCode" id="fragment-shader">
 				<script>
@@ -294,12 +292,13 @@
 	    gl.uniform1f(fragTime, audioContext.currentTime);
 	    copyAudioDataToTexture(gl, spectrum, fragSpectrumArray);
 	    renderQuad(gl)
-	  }
-	</script> -->
+	  } -->
+	<!-- </script> -->
 
 	  <p>
 	    <canvas id="fragment"></canvas>
 	  </p>
+
 	  <p>
 	    <button class="song-btn">Play Song</button>
 	  </p>

@@ -33,13 +33,17 @@ export class TrackAudioManager {
            audioSource: null,
            beat_list: null,
            bpm: 95.23,
+           waveFormData: null,
+           duration: 200
          },
          {
            trackName: '03-SW-062017.mp3',
            buffer: null,
            audioSource: null,
-           beat_list: [],
+           beat_list: null,
            bpm: 123.32,
+           waveFormData: null,
+           duration: 200
          },
        ];
   }
@@ -61,6 +65,16 @@ export class TrackAudioManager {
     this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
     this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
     this.songBufferInfo[i]['audioSource'].connect(audioCtx.destination);
+    // console.log('audiotx: ', audioCtx);
+    // console.log('audioSource: ', this.songBufferInfo[i]['audioSource']);
+
+    // var source = audioCtx.createMediaElementSource(this.songBufferInfo[i]['audioSource']);
+    // var analyser = audioCtx.createAnalyser();
+    // source.connect(analyser);
+    // analyser.fftSize = 2048;
+    // var bufferLength = analyser.frequencyBinCount;
+    // this.songBufferInfo[i]['dataArray'] = new Uint8Array(bufferLength);
+    // console.log('dataArray: ', this.songBufferInfo[i]['dataArray']);
   }
 
   playTrack (i, playOffsetSec, duration) {
@@ -90,19 +104,18 @@ export class TrackAudioManager {
   }
 
   frequencyDemo(i){
+      var myAudio = document.querySelector('audio');
       var songName = '../static/source_audio/'+this.songBufferInfo[i].trackName;
-      var audio = new Audio(songName);
-      // if(audio01 != null){audio01.removeChild(audio);};
-      document.getElementById('audio_box').appendChild(audio);
-      // document.getElementById("audio_box").src = '../static/source_audio/'+this.songBufferInfo[i].trackName;
-      audio.controls = true;
+      myAudio.src = songName;
+
       analyser = audioCtx.createAnalyser();
-      canvas = document.getElementById('analyser_render');
-      ctx = canvas.getContext('2d');
       // Re-route audio playback into the processing graph of the AudioContext
-      source = audioCtx.createMediaElementSource(audio);
+      source = audioCtx.createMediaElementSource(myAudio);
       source.connect(analyser);
       analyser.connect(audioCtx.destination);
+
+      canvas = document.getElementById('analyser_render');
+      ctx = canvas.getContext('2d');
       frameLooper();
   }
 

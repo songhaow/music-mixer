@@ -125,6 +125,7 @@ function rerenderTracks(svg, trackInputInfoList) {
   var trackHeightPx = 70;
 
   trackInputInfoList.forEach(function(t, i) {
+    var htmlElementId = t.id;
     var fname = t.fname;
     var color = t.color;
     var bckgdcolor = t.backgroundcolor;
@@ -134,13 +135,14 @@ function rerenderTracks(svg, trackInputInfoList) {
     var trackDisplayGroup = svg.append('g');
     var w = svg.attr('width');
     trackDisplayGroup.attr('class', 'trackDisplayGroup');
-    renderAllTrackInfo( i, trackDisplayGroup, fname, trackTopY, trackBottomY, color, bckgdcolor, w, trackInputInfoList);
+    renderAllTrackInfo( i, htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color, bckgdcolor, w, trackInputInfoList);
   });
 }
 
-function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY, color, bckgdcolor, w, trackInputInfoList){
+function renderAllTrackInfo(i, htmlElementId, trackDisplayGroup, fname, trackTopY, trackBottomY, color, bckgdcolor, w, trackInputInfoList){
 
     var bpm01 = d3.format(".0f")(trackInputInfoList[i].bpm);
+
     var beatListArray = trackInputInfoList[i].beat_list; // X direction
     var xMin = 0;
     var xOffset = d3.min(beatListArray);
@@ -151,10 +153,22 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
     var xScale = w/xMax;
 
     var waveListY = [];  // Y direction
+    // var yMax = waveListY.reduce(function(a, b) {
+    //     return Math.max(a, b);
+    // });
+    // var yListLength = waveListY.length;
     var xListLength = beatListArray.length;
+    // console.log('xListLength001: ', xListLength);
+    // console.log('i: ', i);
+    // debugger
     for(var j = 0; j< xListLength; j++){
       waveListY[j] = trackBottomY-trackInputInfoList[i].wave[j];
     };
+    console.log('waveY data: ', i, waveListY);
+    // console.log('yMax: ', yMax);
+    // var yScale = d3.scaleLinear()
+    //                   .domain([0,yMax])
+    //                   .range([0,70]);
 
     if (i==0){
       PositionObj.play1Scale = xScale;
@@ -190,32 +204,34 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
-      trackLinesGroup, beatListArray, waveListY, color, bckgdcolor,
-      trackTopY, trackBottomY, xScale, xAxis, xStart,xOffset);
+      htmlElementId, trackLinesGroup, beatListArray, waveListY, color, bckgdcolor,
+      trackTopY, trackBottomY, xScale, xAxis, xStart,i,xOffset);
 }
 
 /**
  * @param xScale: how much to "zoom in" x axis
  */
+
 function renderDraggableTrack(
-        trackLinesGroup, beatListArray, waveListY, color, bckgdcolor,
-        trackTopY, trackBottomY, xScale, xAxis, xStart, xOffset) {
+        htmlElementId, trackLinesGroup, beatListArray, waveListY, color, bckgdcolor,
+        trackTopY, trackBottomY, xScale, xAxis, xStart, i, xOffset) {
 
   // X position of the last beat for the track
   var xMax = d3.max(beatListArray) * xScale;
 
   // Add lines
   trackLinesGroup.attr('class', 'trackLinesGroup');
-  trackLinesGroup.call(d3.drag()
-                         .on('drag', dragged)
-                         .subject(setDragSubject)
-                         .on("end", dragended)
-                      );
+  trackLinesGroup.call(
+    d3.drag()
+      .on('drag', dragged)
+      .subject(setDragSubject)
+      .on("end", dragended)
+  );
 
   // Add background rectangle to group for continuous hit area for
   // dragging
   var trackBkgrnd = trackLinesGroup.append('rect');
-      // trackBkgrnd.attr('id', htmlElementId);
+      trackBkgrnd.attr('id', htmlElementId);
       trackBkgrnd.attr('fill', bckgdcolor);
       trackBkgrnd.attr('class', 'dragRect');
       trackBkgrnd.attr('x', '0');
@@ -228,19 +244,61 @@ function renderDraggableTrack(
       xAxis01.attr('transform', 'translate(0,'+trackBottomY+')')
       xAxis01.call(xAxis);
 
-  var j, beatListScaled = [];
-  for (j = 0; j < beatListArray.length; j++)
-      { beatListScaled[j] = (beatListArray[j]-xOffset)*xScale}
+  var ii;
+  var beatListScaled = [];
+  for (ii = 0; ii < beatListArray.length; ii++)
+      { beatListScaled[ii] = (beatListArray[ii]-xOffset)*xScale}
+
+//https://www.oxxostudio.tw/articles/201411/svg-d3-05-area.html
+/*reference for d3
+var dataArray=[14,35,56,67,99,122,150,160,233,300,322,360];
+var dataMonths=[1,2,3,4,5,6,7,8,9,10,11,12];
+
+  var y = d3.scaleLinear()
+            .domain([0,360])
+            .range([height,0]);
+
+  var area = d3.area()
+      .x(function(d,i){return x(parseMonth(dataMonths[i]))})
+      .y0(height)
+      .y1(function(d){return y(d);});
+
+      grp.selectAll('circle.grpcircle'+t)
+    .data(dataArray)
+    .enter().append('circle')
+            .attr('class', function(d,i){return 'grpcircle'+t;})
+            .attr('cx', function(d,i){return x(parseMonth(dataMonths[i]))})
+            .attr('cy', function(d){return y(d);})
+            .attr('r','3')
+            .attr('fill','green');
+*/
+  // console.log('waveListY: ', waveListY);
+  // var waveYMax = d3.max(waveListY);
+  // console.log('waveMaxY: ', waveYMax);
+  // var waveMax = d3.max(waveListY);
+
+  // var scaleY = d3.scaleLinear()
+  //                .domain([0, 0.175])
+  //                .range([70,0]);
+
+  // console.log('trackTopY: ',trackTopY);
+  // console.log('trackBottomY: ',trackBottomY);
+  // console.log('waveY: ', scaleY);
 
   var beatLines = trackLinesGroup.selectAll('line')
+                                 // .data(waveListY);
                               .data(beatListScaled);
       beatLines.enter().append('line')
                        .style('stroke', color)
-                       .attr('stroke-width', '8px')
-                       .attr('x1', function(d,k) {return beatListScaled[k]})
-                       .attr('x2', function(d,k) {return beatListScaled[k]})
-                       .attr('y1', function(d,k){return waveListY[k]})
+                       .attr('stroke-width', 2)
+                       .attr('x1', function(d,i) {return beatListScaled[i]})
+                       .attr('x2', function(d,i) {return beatListScaled[i]})
+                       .attr('y1', function(d,i){return waveListY[i]})
                        .attr('y2', trackBottomY);
+                   // .attr('x1', function(d) {return d})
+                   // .attr('x2', function(d) {return d})
+                   // .attr('y1', trackTopY)
+                   // .attr('y2', trackBottomY);
       beatLines.exit().remove();
 }
 
