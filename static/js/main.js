@@ -35,8 +35,21 @@ document.getElementById("fname02").onchange = function(e) {
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
   trackAudioManager.playTrack(0, PositionObj.play1X);
+  updateAudioPosition();
   // trackAudioManager.frequencyDemo(0);
  };
+
+ function updateAudioPosition() {/////
+   // const {currentTime, duration} = audio;
+   // const physicalPosition = currentTime / duration * width;
+   // if (physicalPosition) {
+   //   progress.setAttribute('width', physicalPosition);
+   //   remaining.setAttribute('x', physicalPosition);
+   //   remaining.setAttribute('width', width - physicalPosition);
+   // }
+   requestAnimationFrame(updateAudioPosition);/////
+ }
+
 
 document.querySelector('#pause1Button').onclick = function() {
    trackAudioManager.stopTrack(0);

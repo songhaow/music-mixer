@@ -1,6 +1,7 @@
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 export const audioCtx = new AudioContext();
+// var sample = new VolumeSample();
 // const track1Element = document.querySelector('#track1');
 // const trackNode = audioCtx.createMediaElementSource(track1Element);
 // trackNode.connect(audioCtx.destination);
@@ -26,6 +27,8 @@ var analyser, canvas, ctx, fbc_array, source, bars,bar_x, bar_width, bar_height;
 
 export class TrackAudioManager {
   constructor () {
+     this.gainNode;
+     this.analyser;
      this.songBufferInfo = [
          {
            trackName: '01-SW-042017.mp3',
@@ -61,12 +64,44 @@ export class TrackAudioManager {
     this.songBufferInfo[i]['buffer'] = audioBuffer;
   }
 
-  _resetTrackSource (i) {
-    this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
-    this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
-    this.songBufferInfo[i]['audioSource'].connect(audioCtx.destination);
-    // console.log('audiotx: ', audioCtx);
-    // console.log('audioSource: ', this.songBufferInfo[i]['audioSource']);
+/*
+      this.gainNode = context.createGain();
+      this.source = context.createBufferSource();
+      this.source.buffer = this.buffer;
+      // Connect source to a gain node
+      this.source.connect(this.gainNode);
+      // Connect gain node to destination
+      this.gainNode.connect(context.destination);
+*/
+
+  _resetTrackSource (i) { // Try to make volume control & frequency demo
+      this.gainNode = audioCtx.createGain();
+      this.analyser = audioCtx.createAnalyser();
+
+      this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
+      this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
+
+      // this.sourceVideo = audioCtx.createMediaElementSource(this.songBufferInfo[i].trackName);//??????
+      // this.sourceVideo.connect(analyser);
+      // canvas = document.getElementById('analyser_render');
+      // ctx = canvas.getContext('2d'); // to animate frequeny, this not okay yet
+
+      this.songBufferInfo[i]['audioSource'].connect(this.gainNode);
+      this.gainNode.gain.value = 0.5; // gainNode is okay
+      this.gainNode.connect(audioCtx.destination); // to plat music
+
+  // _resetTrackSource (i) { // Original without volume control
+  //   this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
+  //   this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
+  //   this.songBufferInfo[i]['audioSource'].connect(audioCtx.destination);
+
+     // https://webaudioapi.com/samples/volume/
+    //  var sample = new VolumeSample();
+    //  VolumeSample.prototype.changeVolume = function(element) {
+    //     var volume = element.value;
+    //     var fraction = parseInt(element.value) / parseInt(element.max);
+    //     this.gainNode.gain.value = fraction * fraction;
+    // };
 
     // var source = audioCtx.createMediaElementSource(this.songBufferInfo[i]['audioSource']);
     // var analyser = audioCtx.createAnalyser();
@@ -85,6 +120,8 @@ export class TrackAudioManager {
       playOffsetSec = 0;
     }
     this.songBufferInfo[i]['audioSource'].start(0, playOffsetSec, duration);
+    var currentTime = audioCtx.currentTime;
+    console.log('currentTime:', currentTime);
     this.frequencyDemo(i);
   }
 

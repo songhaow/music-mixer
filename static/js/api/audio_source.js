@@ -5,7 +5,7 @@ import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js'
 export const AudioSourceInterface = {
   loadBackendTrack(i, trackAudioManager, songName) {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:8080/song-content?songName=' + songName, true);
+  xhr.open('GET', 'http://localhost:8000/song-content?songName=' + songName, true);
   xhr.responseType = 'arraybuffer';
   xhr.onload = function () {
 
