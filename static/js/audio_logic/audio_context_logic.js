@@ -87,7 +87,7 @@ export class TrackAudioManager {
       // ctx = canvas.getContext('2d'); // to animate frequeny, this not okay yet
 
       this.songBufferInfo[i]['audioSource'].connect(this.gainNode);
-      this.gainNode.gain.value = 0.5; // gainNode is okay
+      this.gainNode.gain.value = 1; // gainNode is okay
       this.gainNode.connect(audioCtx.destination); // to plat music
 
   // _resetTrackSource (i) { // Original without volume control
