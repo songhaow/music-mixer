@@ -70,6 +70,7 @@ function baseAxis(mainSvgEl){
   var texty =mainSvgEl.append('text')
           .attr('x', 670)
           .attr('y', 355)
+          .attr('fill', '#FFFACD')
           .style('font-size', '14px')
           .style('font-weight', 'bold')
           .text('Global coordinate');
@@ -166,7 +167,8 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
     }
 
     var xStart = 0;
-    var xAxis = d3.axisBottom().scale(axisScale);
+    var xAxis = d3.axisBottom()
+                  .scale(axisScale);
 
 // change .txt to .mp3
     var split = fname.split('/');
@@ -180,12 +182,14 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
     trackDisplayGroup.append('text')
         .attr('x', 20)
         .attr('y', trackTopY - 8)
+        .attr('fill', '#FFFACD')
         .style('font-size', '16px')
         .style('font-weight', 'bold')
         .text('Track'+j+':  '+ fnameTxt + ';  Duration = ' + tString + '[minutes];  bpm = ' +bpm01 );
     trackDisplayGroup.append('text')
         .attr('x', 700)
         .attr('y', trackBottomY + 35)
+        .attr('fill', '#FFFACD')
         .text('(Seconds)');
 
     var trackLinesGroup = trackDisplayGroup.append('g');

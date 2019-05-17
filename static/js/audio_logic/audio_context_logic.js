@@ -1,4 +1,3 @@
-
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 export const audioCtx = new AudioContext();
 // var sample = new VolumeSample();
@@ -154,6 +153,7 @@ export class TrackAudioManager {
       canvas = document.getElementById('analyser_render');
       ctx = canvas.getContext('2d');
       frameLooper();
+
   }
 
 };

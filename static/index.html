@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang = "en">
 
-  <head>
-    <meta charset="utf-8utf-8">
-    <title>songtrack_backend.js</title>
+<head>
+<meta charset="utf-8utf-8">
+<title>songtrack_backend.js</title>
 
-    <style>
+<style>
+
+    .head{
+      background-color: rgb(0,60,60);
+      font-size: 24px;
+      color: #FFFACD;
+      /* text: #E0FFFF */
+      font-weight: bold;
+      text-align: center;
+      padding: 15px;
+    }
     .grid-container {
       display: flex;
       justify-content: center;
@@ -19,6 +29,8 @@
       grid-gap: 5px;
       background-color: rgb(96,125,139);
       padding: 5px;
+      margin-bottom: 5px;
+      margin-top:  1px;
     }
 
     .playbox{
@@ -55,6 +67,7 @@
       margin-right: auto;
       background-color: rgb(50,100,120);
       margin-bottom: 5px;
+      margin-top:  1px;
     }
 
     .inputbox{
@@ -76,7 +89,7 @@
       padding: 5px;
       text-align: center;
       width: 800px;
-      height: 160px;
+      /* height: 160px; */
       background-color: #002D3C;
       margin: auto;
     }
@@ -86,25 +99,37 @@
       padding: 5px;
       text-align: center;
       width: 700px;
-      height: 90px;
+      height: 60px;
       background: linear-gradient(white, rgb(50,50,50));
       margin: auto;
     }
-    </style>
-
+    div #fragment{
+      align-items: center;
+      padding: 20px;
+      background: radial-gradient(circle, #999, #100);
+      width: 400px;
+      height:350px;
+    }
+    /* d3-svg{
+      background: radial-gradient(circle, #999, #100);
+    } */
+</style>
     <link rel="stylesheet" href="../static/css/build-music-visualizer.css">
+    <link rel="stylesheet" type="text/css" href="static/css/tracks-sw.css">
 
 		<script>
 		   window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 		   ga('create', 'UA-15976986-14', 'auto');
 		   ga('send', 'pageview');
 		</script>
+
     <script src = "../static/js/build-music-visualizer/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/vendor/d3.v4.js"></script>
+
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio-api.js"></script>
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-render.js"></script>
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio.js"></script>
-    <link rel="stylesheet" type="text/css" href="static/css/tracks-sw.css">
-    <script type="text/javascript" src="static/js/vendor/d3.v4.js"></script>
+
     <div class = "head" title="Music mixer">Music - Mixer</div>
   </head>
 
@@ -113,9 +138,8 @@
     <div class = 'box00' >
       <div class = "div01">
         <!-- <div class = "divd3" id="chartForTrack"></div> -->
-        <svg width="1360" height="365" style="border: 1px solid black;" padding = "10px" margin = '10px'></svg>
+        <svg id = 'd3-svg' width="1360" height="365" style="border: 1px solid #E0FFFF;" padding = "10px" margin = '10px'></svg>
       </div>
-      <hr>
 
       <div class="grid-container">
         <div class="myImg">
@@ -134,7 +158,6 @@
           <button id='pauseMixButton'>Pause mix</button>
         </div>
       </div>
-      <br>
 
       <div class = "div03">
           <div class = "inputbox">
@@ -148,23 +171,15 @@
       <div id = "freq_graph">
          <canvas id = "analyser_render"></canvas>
          <div id = "audio_box">
-           <audio controls></audio>
-           <input type="range" min="0" max="100" value="50" oninput="sample.changeVolume(this);">
-         </div>
+           <audio controls></audio><br>
+           <button class="song-btn">Play Song</button>
+           <!-- <input type="range" min="0" max="100" value="50" oninput="sample.changeVolume(this);"> -->
+           <div>
+               <canvas id="fragment"></canvas><br>
+               <!-- <button class="song-btn">Play Song</button> -->
+           </div>
+
       </div>
-    </div>
-
-
-
-    <div id="container">
-      <article>
-        <p>
-          <canvas id="fragment"></canvas>
-        </p>
-
-        <p>
-          <button class="song-btn">Play Song</button>
-        </p>
 
         <div class="sourceCode" id="vertex-shader">
           <script>
@@ -223,46 +238,6 @@
       masterGain.connect(analyser);
       const waveform = new Float32Array(analyser.frequencyBinCount);
       analyser.getFloatTimeDomainData(waveform);
-    </script> -->
-
-    <!-- <script> // the replace js code for all
-        const analyser = audioContext.createAnalyser();
-        masterGain.connect(analyser);
-        const waveform = new Float32Array(analyser.frequencyBinCount);
-        analyser.getFloatTimeDomainData(waveform);
-      const spectrum = new Uint8Array(analyser.frequencyBinCount);
-      function updateSpectrum() {
-        requestAnimationFrame(updateSpectrum);
-        analyser.getByteFrequencyData(spectrum);
-      }
-
-
-      const fragCanvas = document.getElementById('fragment');
-      fragCanvas.width = fragCanvas.parentNode.offsetWidth;
-      fragCanvas.height = fragCanvas.width * 0.75;
-      const gl = fragCanvas.getContext('webgl') || fragCanvas.getContext('experimental-webgl');
-      const vertexShaderSrc = document.getElementById('vertex-shader').textContent;
-      const fragmentShaderSrc = document.getElementById('fragment-shader').textContent;
-      const fragShader = createShader(gl, vertexShaderSrc, fragmentShaderSrc);
-
-
-      const fragPosition = gl.getAttribLocation(fragShader, 'position');
-      gl.enableVertexAttribArray(fragPosition);
-      const fragTime = gl.getUniformLocation(fragShader, 'time');
-      gl.uniform1f(fragTime, audioContext.currentTime);
-      const fragResolution = gl.getUniformLocation(fragShader, 'resolution');
-      gl.uniform2f(fragResolution, fragCanvas.width, fragCanvas.height);
-      const fragSpectrumArray = new Uint8Array(4 * spectrum.length);
-      const fragSpectrum = createTexture(gl);
-
-
-      initQuad(gl);
-      function renderFragment() {
-        requestAnimationFrame(renderFragment);
-        gl.uniform1f(fragTime, audioContext.currentTime);
-        copyAudioDataToTexture(gl, spectrum, fragSpectrumArray);
-        renderQuad(gl)
-      }
     </script> -->
 
     <pre class="sourceCode javascript">
@@ -437,29 +412,10 @@
       } -->
     <!-- </script> -->
 
-    </article>
+    <!-- </article> -->
     </div>
-
-    <!-- <div class = "div02">
-      <div class = "box">
-        <h5>Regular play Song1: 02-SW-062018.mp3</h5>
-        <audio id="track5" src="static/source_audio/02-SW-062018.mp3" type="audio/mpeg" controls></audio>
-      </div>
-      <div class = "box">
-        <h5>Regular play Song2: 07-Littlewhiteboat.mp3</h5>
-        <audio id="track6" src="static/source_audio/07-Littlewhiteboat.mp3" type="audio/mpeg" controls></audio>
-      </div>
-    </div> -->
-
+</div>
   </body>
-
-  <!-- <script>
-  canvas = document.getElementById('analyser_render');
-  console.log('canvas width&height: ', canvas.width, canvas.height);
-  ctx = canvas.getContext('2d');
-  ctx.fillStyle = "rgb(200,0,200)";
-  ctx.fillRect(10,10,30,30);
-  </script> -->
 
   <script src="static/js/main.js" type="module"></script>
   <!-- https://www.npmjs.com/package/music-tempo -->

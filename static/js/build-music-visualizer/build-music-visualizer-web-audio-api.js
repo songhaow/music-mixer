@@ -1,11 +1,14 @@
 let audioContext, masterGain;
 
+// var trackAudioManager = new TrackAudioManager();
+
 $(function main () {  // When this main() is operating?
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   masterGain = audioContext.createGain();
   masterGain.connect(audioContext.destination);
   // const song = new Audio('//zacharydenton.github.io/noisehack/static/zero_centre.mp3')
   const song = new Audio('../static/source_audio/eyes.m4a');
+  // const song = new Audio('../static/source_audio/'+trackAudioManager.songBufferInfo[i].trackName);
   song.crossOrigin = 'anonymous';
   const songSource = audioContext.createMediaElementSource(song);
   let songPlaying = false;

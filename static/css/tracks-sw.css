@@ -6,7 +6,8 @@ html, body{
 .head{
   background-color: rgb(0,60,60);
   font-size: 24px;
-  color: white;
+  /* color: #E0FFFF; */
+  text-decoration-color:#E0FFFF
   font-weight: bold;
   text-align: center;
   padding: 15px;
@@ -22,9 +23,11 @@ line.xaxis {
 
 .box00{
   background: linear-gradient(white, rgb(10,10,10));
+  /* background: radial-gradient(circle, #999, #100); */
 }
 
 .div01{
+  background: radial-gradient(circle, #999, #333);
   padding: 5px;
   text-align: center;
   margin-left: auto;
