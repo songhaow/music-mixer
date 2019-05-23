@@ -3,15 +3,7 @@ html, body{
   font-size: 14px;
   font-family: serif;
 }
-.head{
-  background-color: rgb(0,60,60);
-  font-size: 24px;
-  /* color: #E0FFFF; */
-  text-decoration-color:#E0FFFF
-  font-weight: bold;
-  text-align: center;
-  padding: 15px;
-}
+
 line {
   stroke: green;
   stroke-width: 1px;
@@ -27,7 +19,7 @@ line.xaxis {
 }
 
 .div01{
-  background: radial-gradient(circle, #999, #333);
+  background: radial-gradient(circle, #888, #000);
   padding: 5px;
   text-align: center;
   margin-left: auto;
@@ -62,4 +54,111 @@ audio:hover{
   font-family: serif;
   font-size: 20px;
   color: black;
+  background-image: url(static/images/openfiles.jpeg;
+}
+
+.head{
+  background-color: rgb(0,60,60);
+  font-size: 24px;
+  color: #FFFACD;
+  /* text: #E0FFFF */
+  font-weight: bold;
+  text-align: center;
+  padding: 15px;
+}
+.grid-container {
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  display: grid;
+  grid-template-columns: auto 230px 230px 230px;
+  grid-gap: 5px;
+  background-color: rgb(96,125,139);
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-top:  1px;
+}
+
+.playbox{
+  flex:none;
+  border-radius: 5px;
+  width: 225px;
+  height: 60px;
+  margin: 3px;
+  padding-left: 3px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  display: inline-block;
+  vertical-align: top;
+  background: linear-gradient(white, rgb(50,50,50));
+  font-size: 20px;
+}
+
+.myImg{
+  flex:none;
+  width:180px;
+  height: 58px
+  border-radius: 5px;
+  padding-top: 1px;
+  background: linear-gradient(white, rgb(50,50,50));
+}
+
+.div03{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  text-align: center;
+  border-radius: 10px;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgb(50,100,120);
+  margin-bottom: 5px;
+  margin-top:  1px;
+}
+
+.inputbox{
+  flex:none;
+  border-radius: 5px;
+  width: 500px;
+  margin: 5px;
+  padding-left: 30px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  display: inline-block;
+  vertical-align: center;
+  background: linear-gradient(white, rgb(50,50,50));
+  font-size: 20px;
+}
+
+#freq_graph{
+  align-items: center;
+  padding: 5px;
+  text-align: center;
+  width: 800px;
+  /* height: 160px; */
+  background-color: #002D3C;
+  margin: auto;
+}
+
+#analyser_render{
+  align-items: center;
+  padding: 2px;
+  text-align: center;
+  width: 210px;
+  height: 55px;
+  background: linear-gradient(white, rgb(50,50,50));
+  margin: auto;
+}
+div #fragment{
+  align-items: center;
+  padding: 20px;
+  background: radial-gradient(circle, #999, #100);
+  width: 400px;
+  height:350px;
 }

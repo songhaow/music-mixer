@@ -3,125 +3,12 @@
 
 <head>
 <meta charset="utf-8utf-8">
-<title>songtrack_backend.js</title>
-
-<style>
-
-    .head{
-      background-color: rgb(0,60,60);
-      font-size: 24px;
-      color: #FFFACD;
-      /* text: #E0FFFF */
-      font-weight: bold;
-      text-align: center;
-      padding: 15px;
-    }
-    .grid-container {
-      display: flex;
-      justify-content: center;
-      border-radius: 10px;
-      width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-      display: grid;
-      grid-template-columns: auto 280px 280px 280px;
-      grid-gap: 5px;
-      background-color: rgb(96,125,139);
-      padding: 5px;
-      margin-bottom: 5px;
-      margin-top:  1px;
-    }
-
-    .playbox{
-      flex:none;
-      border-radius: 5px;
-      width: 250px;
-      margin: 5px;
-      padding-left: 10px;
-      padding-bottom: 5px;
-      padding-top: 5px;
-      display: inline-block;
-      vertical-align: top;
-      background: linear-gradient(white, rgb(50,50,50));
-      font-size: 20px;
-    }
-
-    .myImg{
-      flex:none;
-      width:100px;
-      border-radius: 5px;
-      padding-top: 5px;
-      background: linear-gradient( white,rgb(50,50,50));
-    }
-
-    .div03{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 5px;
-      text-align: center;
-      border-radius: 10px;
-      width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: rgb(50,100,120);
-      margin-bottom: 5px;
-      margin-top:  1px;
-    }
-
-    .inputbox{
-      flex:none;
-      border-radius: 5px;
-      width: 500px;
-      margin: 5px;
-      padding-left: 30px;
-      padding-bottom: 5px;
-      padding-top: 5px;
-      display: inline-block;
-      vertical-align: center;
-      background: linear-gradient(white, rgb(50,50,50));
-      font-size: 20px;
-    }
-
-    #freq_graph{
-      align-items: center;
-      padding: 5px;
-      text-align: center;
-      width: 800px;
-      /* height: 160px; */
-      background-color: #002D3C;
-      margin: auto;
-    }
-
-    #analyser_render{
-      align-items: center;
-      padding: 5px;
-      text-align: center;
-      width: 700px;
-      height: 60px;
-      background: linear-gradient(white, rgb(50,50,50));
-      margin: auto;
-    }
-    div #fragment{
-      align-items: center;
-      padding: 20px;
-      background: radial-gradient(circle, #999, #100);
-      width: 400px;
-      height:350px;
-    }
-    /* d3-svg{
-      background: radial-gradient(circle, #999, #100);
-    } */
-</style>
-    <link rel="stylesheet" href="../static/css/build-music-visualizer.css">
+    <title>songtrack_backend.js</title>
     <link rel="stylesheet" type="text/css" href="static/css/tracks-sw.css">
-
-		<script>
-		   window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-		   ga('create', 'UA-15976986-14', 'auto');
-		   ga('send', 'pageview');
-		</script>
+    <link rel="stylesheet" href="../static/css/build-music-visualizer.css">
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="static/css/fontawesome.css"> -->
 
     <script src = "../static/js/build-music-visualizer/jquery.min.js"></script>
     <script type="text/javascript" src="static/js/vendor/d3.v4.js"></script>
@@ -130,56 +17,83 @@
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-render.js"></script>
 		<script src = "../static/js/build-music-visualizer/build-music-visualizer-web-audio.js"></script>
 
+    <script src="static/js/main.js" type="module"></script>
+    <!-- https://www.npmjs.com/package/music-tempo -->
+    <script src="static/js/music-tempo.min.js"></script>
+
     <div class = "head" title="Music mixer">Music - Mixer</div>
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <div class = 'box00' >
-      <div class = "div01">
-        <!-- <div class = "divd3" id="chartForTrack"></div> -->
-        <svg id = 'd3-svg' width="1360" height="365" style="border: 1px solid #E0FFFF;" padding = "10px" margin = '10px'></svg>
+<div class = 'box00' >
+    <div class = "div01">
+      <!-- <div class = "divd3" id="chartForTrack"></div> -->
+      <svg id = 'd3-svg' width="1360" height="365" style="border: 1px solid #E0FFFF;" padding = "10px" margin = '10px'></svg>
+    </div>
+
+    <div class="grid-container">
+      <div class="playbox">
+        <canvas id = "analyser_render" style="border: 1px solid #000;"></canvas>
       </div>
 
-      <div class="grid-container">
-        <div class="myImg">
-          <img id="myImg" src="static/source_audio/music-01.png" height="35">
-        </div>
-        <div class = "playbox">
-          <button id='play1Button' title="Play track1"> Play track1 </button>
-          <button id='pause1Button' title="Pause track1"> Pause track1 </button>
-        </div>
-        <div class = "playbox">
-          <button id='play2Button'> Play track2 </button>
-          <button id='pause2Button'> Pause track2 </button>
-        </div>
-        <div class = "playbox">
-          <button id='playMixButton'>Play mix</button>
-          <button id='pauseMixButton'>Pause mix</button>
-        </div>
+<!-- https://fontawesome.com/icons/bold?style=solid  about icon graphs-->
+<!-- https://codepen.io/superpikar/pen/zJsgH -->
+
+      <div class = "playbox">
+          <button type="button" class="btn">
+               <i style="font-size:22px" class="fa">&#xf031;</i>
+          </button>
+          <button type="button" id="button_play1" class="btn">
+               <i style="font-size:22px" class="fa fa-play"></i>
+          </button>
+          <button type="button" id="button_stop1" class="btn">
+               <i style="font-size:22px" class="fa fa-stop"></i>
+          </button>
       </div>
 
-      <div class = "div03">
+      <div class = "playbox">
+          <button type="button" class="btn">
+               <i style="font-size:22px" class="fa">&#xf032;</i>
+          </button>
+          <button type="button" id="button_play2" class="btn">
+               <i style="font-size:22px" class="fa fa-play"></i>
+          </button>
+          <button type="button" id="button_stop2" class="btn">
+               <i style="font-size:22px" class="fa fa-stop"></i>
+          </button>
+      </div>
+
+      <div class = "playbox">
+          <button type="button" class="btn">
+               <i style="font-size:22px" class="fa">&#xf136;</i>
+          </button>
+          <button type="button" id="button_playM" class="btn">
+               <i style="font-size:22px" class="fa fa-play"></i>
+          </button>
+          <button type="button" id="button_stopM" class="btn">
+               <i style="font-size:22px" class="fa fa-stop"></i>
+          </button>
+      </div>
+
+    </div>
+
+    <div class = "div03">
           <div class = "inputbox">
-            Load track01: <input id = "fname01" type="file" accept="mp3/m4a"></input>
+            A: <input id = "fname01" type="file" accept="mp3/m4a"></input>
           </div>
           <div class = "inputbox">
-            Load track2: <input id = "fname02" type="file" accept="mp3/m4a"></input>
+            B: <input id = "fname02" type="file" accept="mp3/m4a"></input>
           </div>
-      </div>
+    </div>
 
-      <div id = "freq_graph">
-         <canvas id = "analyser_render"></canvas>
+    <div id = "freq_graph">
          <div id = "audio_box">
-           <audio controls></audio><br>
-           <button class="song-btn">Play Song</button>
-           <!-- <input type="range" min="0" max="100" value="50" oninput="sample.changeVolume(this);"> -->
-           <div>
-               <canvas id="fragment"></canvas><br>
-               <!-- <button class="song-btn">Play Song</button> -->
-           </div>
-
-      </div>
+           <audio controls></audio>
+           <button class="song-btn">Play</button>
+           <input type="range" min="0" max="100" value="50" oninput="sample.changeVolume(this);"><br>
+           <canvas id="fragment"></canvas><br>
+         </div>
 
         <div class="sourceCode" id="vertex-shader">
           <script>
@@ -415,10 +329,6 @@
     <!-- </article> -->
     </div>
 </div>
-  </body>
-
-  <script src="static/js/main.js" type="module"></script>
-  <!-- https://www.npmjs.com/package/music-tempo -->
-  <script src="static/js/music-tempo.min.js"></script>
+</body>
 
 </html>
