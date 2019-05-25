@@ -13,29 +13,28 @@ export const PositionObj = {
 }
 
 export const TrackCanvasInterface = {
-  initialRender(f1, bpm1, list1, wave1, duration1, f2, bpm2, list2, wave2, duration2) {
+  initialRender(f1, bpm1, list1, wave1, waveL1, waveR1, duration1, f2, bpm2, list2, wave2, waveL2, waveR2, duration2) {
     var trackInputInfoList = [
       {
-        // color: '#FF5722',
         color: '#FFC0CB',
-        // backgroundcolor: '#F2D7D5',
         backgroundcolor: 'rgba(255, 0, 0, 0.05)',
         fname: f1,
         bpm: bpm1,
         beat_list: list1,
         wave: wave1,
+        waveL: waveL1,
+        waveR: waveR1,
         duration: duration1
       },
       {
         color: '#7FFF00',
-        // color: '#FF5722',
-        // color: 'green',
-        // backgroundcolor: '#D1F2EB',
         backgroundcolor: 'rgba(0, 255, 0, 0.05)',
         fname: f2,
         bpm: bpm2,
         beat_list: list2,
         wave: wave2,
+        waveL: waveL2,
+        waveR: waveR2,
         duration: duration2
       },
     ];
@@ -157,9 +156,13 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
     var xScale = w/xMax;
 
     var waveListY = [];  // Y direction
+    var waveListYL = [];
+    var waveListYR = [];
     var xListLength = beatListArray.length;
     for(var j = 0; j< xListLength; j++){
       waveListY[j] = trackBottomY-trackInputInfoList[i].wave[j];
+      waveListYL[j] = trackBottomY-trackInputInfoList[i].waveL[j];
+      waveListYR[j] = trackBottomY-trackInputInfoList[i].waveR[j];
     };
 
     if (i==0){
@@ -191,15 +194,15 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
         .style('font-size', '16px')
         // .style('font-weight', 'bold')
         .text('Track'+j+':  '+ fnameTxt + ';  Duration = ' + tString + '[minutes];  bpm = ' +bpm01 );
-    trackDisplayGroup.append('text')
-        .attr('x', 700)
-        .attr('y', trackBottomY + 35)
-        .attr('fill', '#FFFACD')
-        .text('(Seconds)');
+    // trackDisplayGroup.append('text')
+    //     .attr('x', 700)
+    //     .attr('y', trackBottomY + 35)
+    //     .attr('fill', '#FFFACD')
+    //     .text('(Seconds)');
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
-      trackLinesGroup, beatListArray, waveListY, color, bckgdcolor,
+      trackLinesGroup, beatListArray, waveListY, waveListYL, waveListYR, color, bckgdcolor,
       trackTopY, trackBottomY, xScale, xAxis, xStart,xOffset);
 }
 
@@ -207,7 +210,7 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
  * @param xScale: how much to "zoom in" x axis
  */
 function renderDraggableTrack(
-        trackLinesGroup, beatListArray, waveListY, color, bckgdcolor,
+        trackLinesGroup, beatListArray, waveListY, waveListYL, waveListYR, color, bckgdcolor,
         trackTopY, trackBottomY, xScale, xAxis, xStart, xOffset) {
 
   // X position of the last beat for the track
@@ -228,7 +231,7 @@ function renderDraggableTrack(
       trackBkgrnd.attr('fill', bckgdcolor);
       trackBkgrnd.attr('class', 'dragRect');
       trackBkgrnd.attr('x', '0');
-      trackBkgrnd.attr('y', trackTopY);
+      trackBkgrnd.attr('y', trackTopY + trackTopY);
       trackBkgrnd.attr('width', xMax);
       trackBkgrnd.attr('height', trackBottomY - trackTopY);
 
@@ -239,7 +242,7 @@ function renderDraggableTrack(
 
   var j, beatListScaled = [];
   for (j = 0; j < beatListArray.length; j++)
-      { beatListScaled[j] = (beatListArray[j]-xOffset)*xScale}
+      { beatListScaled[j] = (beatListArray[j] - xOffset) * xScale}
 
   var beatLines = trackLinesGroup.selectAll('line')
                               .data(beatListScaled);
@@ -247,8 +250,17 @@ function renderDraggableTrack(
                        .attr('width', 2)
                        .attr('fill', color)
                        .attr('x', function(d,k) {return beatListScaled[k]})
-                       .attr('y', function(d,k){return waveListY[k]})
-                       .attr('height', function(d,k){return (trackBottomY-waveListY[k])});
+                       .attr('y', function(d,k){return waveListYL[k]})
+                       .attr('height', function(d,k){return (trackBottomY-waveListYL[k])});
+
+  var beatLines = trackLinesGroup.selectAll('line')
+                              .data(beatListScaled);
+      beatLines.enter().append('rect')
+                        .attr('width', 2)
+                        .attr('fill', color)
+                        .attr('x', function(d,k) {return beatListScaled[k]})
+                        .attr('y', function(d,k){return trackBottomY})
+                        .attr('height', function(d,k){return (trackBottomY-waveListYR[k])});
 
       // beatLines.enter().append('line')
       //                                   .style('stroke', color)

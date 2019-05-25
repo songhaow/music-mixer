@@ -19,11 +19,18 @@ export const AudioSourceInterface = {
         trackAudioManager.songBufferInfo[i].duration = d3.max(beatNdTempo.beats); // in seconds
 
         var waveData = getWaveformData(audioBuffer, beatNdTempo.beats.length);
-        trackAudioManager.songBufferInfo[i].waveFormData = waveData; // wave amplitude distribution in time
+        trackAudioManager.songBufferInfo[i].waveFormData = waveData[0]; // wave amplitude distribution in time
+        trackAudioManager.songBufferInfo[i].waveLeft = waveData[1];
+        trackAudioManager.songBufferInfo[i].waveRight = waveData[2];
+        // console.log('valueLeft: ', waveData[1]);
+        // console.log('valueRight: ', waveData[2]);
+        // console.log('values: ', waveData[0]);
 
         var yMax = d3.max(trackAudioManager.songBufferInfo[i].waveFormData); // scale wave amplitude to the disply blocks
         for(var j = 0; j< beatNdTempo.beats.length; j++){
-          trackAudioManager.songBufferInfo[i].waveFormData[j] = trackAudioManager.songBufferInfo[i].waveFormData[j]*70/yMax;
+          trackAudioManager.songBufferInfo[i].waveFormData[j] = trackAudioManager.songBufferInfo[i].waveFormData[j]*50/yMax;
+          trackAudioManager.songBufferInfo[i].waveLeft[j] = trackAudioManager.songBufferInfo[i].waveLeft[j]*50/yMax;
+          trackAudioManager.songBufferInfo[i].waveRight[j] = trackAudioManager.songBufferInfo[i].waveRight[j]*50/yMax;
         };
 
         if (trackAudioManager.songBufferInfo[i].beat_list != null) {
@@ -32,11 +39,16 @@ export const AudioSourceInterface = {
              trackAudioManager.songBufferInfo[0].bpm,
              trackAudioManager.songBufferInfo[0].beat_list,
              trackAudioManager.songBufferInfo[0].waveFormData,
+             trackAudioManager.songBufferInfo[0].waveLeft,
+             trackAudioManager.songBufferInfo[0].waveRight,
              trackAudioManager.songBufferInfo[0].duration,
+
              trackAudioManager.songBufferInfo[1].trackName,
              trackAudioManager.songBufferInfo[1].bpm,
              trackAudioManager.songBufferInfo[1].beat_list,
              trackAudioManager.songBufferInfo[1].waveFormData,
+             trackAudioManager.songBufferInfo[1].waveLeft,
+             trackAudioManager.songBufferInfo[1].waveRight,
              trackAudioManager.songBufferInfo[1].duration,
            );
         }
@@ -55,10 +67,10 @@ function beatsAndTempo(audioBuffer, beatsNdTempo){ // music-tempo.min.js
      var leftchannel = audioBuffer.getChannelData(0);
      var rightchannel = audioBuffer.getChannelData(1);
      for (var j = 0; j < leftchannel.length; j++) {
-       audioData[j] = (leftchannel[j] + rightchannel[j]) / 2;
+        audioData[j] = (leftchannel[j] + rightchannel[j]) / 2;
      }
     } else {
-   audioData = buffer.getChannelData(0);
+        audioData = buffer.getChannelData(0);
     }
   beatsNdTempo = new MusicTempo(audioData);
   return beatsNdTempo;
@@ -66,18 +78,38 @@ function beatsAndTempo(audioBuffer, beatsNdTempo){ // music-tempo.min.js
 
 // https://gist.github.com/bodyflex/e4f6c9ec0fdea9450fd9303dd088b96d
 const avg = values => values.reduce((sum, value) => sum + value, 0) / values.length;
+
 function getWaveformData(audioBuffer, dataPoints) {
   var leftChannel = audioBuffer.getChannelData(0);
   var rightChannel = audioBuffer.getChannelData(1);
-  var values = new Float32Array(dataPoints);
+  var values = new Float32Array(dataPoints); // create a array of length = dataPoints
+
   var dataWindow = Math.round(leftChannel.length / dataPoints);
+  console.log('dataWindow: ', dataWindow);
+
   for (let i = 0, y = 0, buffer = []; i < leftChannel.length; i++) {
     var summedValue = (Math.abs(leftChannel[i]) + Math.abs(rightChannel[i])) / 2;
     buffer.push(summedValue);
     if (buffer.length === dataWindow) {
-      values[y++] = avg(buffer);
+      values[ y++ ] = avg(buffer);
       buffer = [];
     }
   }
-  return values;
+
+  var valueLeft = new Float32Array(dataPoints);
+  var valueRight = new Float32Array(dataPoints);
+  for (let i = 0, y = 0, bufferLeft = [], bufferRight = []; i < leftChannel.length; i++) {
+    var summedValueLeft = Math.abs(leftChannel[i]);
+    var summedValueRight = Math.abs(rightChannel[i]);
+    bufferLeft.push(summedValueLeft);
+    bufferRight.push(summedValueRight);
+    if (bufferLeft.length === dataWindow) {
+      valueLeft[ y++ ] = avg(bufferLeft);
+      valueRight[ y++ ] = avg(bufferRight);
+      bufferLeft = [];
+      bufferRight = []
+    }
+  }
+
+  return[values, valueLeft, valueRight]
 }
