@@ -26,8 +26,10 @@ var analyser, canvas, ctx, fbc_array, source, bars,bar_x, bar_width, bar_height;
 
 export class TrackAudioManager {
   constructor () {
-     this.gainNode;
-     this.analyser;
+     this.gainNode = audioCtx.createGain();
+     this.gainNode.gain.value = 0.5;
+     this.analyser = audioCtx.createAnalyser();
+     this.sourceVideo = null;
      this.songBufferInfo = [
          {
            trackName: '01-SW-042017.mp3',
@@ -36,7 +38,9 @@ export class TrackAudioManager {
            beat_list: null,
            bpm: 95.23,
            waveFormData: null,
-           duration: 200
+           waveLeft: null,
+           duration: 200,
+           dataArray:[]
          },
          {
            trackName: '03-SW-062017.mp3',
@@ -45,7 +49,9 @@ export class TrackAudioManager {
            beat_list: null,
            bpm: 123.32,
            waveFormData: null,
-           duration: 200
+           waveRight: null,
+           duration: 200,
+           dataArray:[]
          },
        ];
   }
@@ -63,46 +69,30 @@ export class TrackAudioManager {
     this.songBufferInfo[i]['buffer'] = audioBuffer;
   }
 
-/*
-      this.gainNode = context.createGain();
-      this.source = context.createBufferSource();
-      this.source.buffer = this.buffer;
-      // Connect source to a gain node
-      this.source.connect(this.gainNode);
-      // Connect gain node to destination
-      this.gainNode.connect(context.destination);
-*/
-
-  _resetTrackSource (i) { // Try to make volume control & frequency demo
-      this.gainNode = audioCtx.createGain();
-      this.analyser = audioCtx.createAnalyser();
-
+  _resetTrackSource (i) { // Try to make frequency demo
       this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
       this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
-
-      // this.sourceVideo = audioCtx.createMediaElementSource(this.songBufferInfo[i].trackName);//??????
-      // this.sourceVideo.connect(analyser);
-      // canvas = document.getElementById('analyser_render');
-      // ctx = canvas.getContext('2d'); // to animate frequeny, this not okay yet
-
       this.songBufferInfo[i]['audioSource'].connect(this.gainNode);
-      this.gainNode.gain.value = 1; // gainNode is okay
-      this.gainNode.connect(audioCtx.destination); // to plat music
+      this.gainNode.connect(audioCtx.destination);
 
-  // _resetTrackSource (i) { // Original without volume control
-  //   this.songBufferInfo[i]['audioSource'] = audioCtx.createBufferSource();
-  //   this.songBufferInfo[i]['audioSource'].buffer = this.songBufferInfo[i]['buffer'];
-  //   this.songBufferInfo[i]['audioSource'].connect(audioCtx.destination);
+      this.songBufferInfo[i]['audioSource'].connect(this.analyser);
+      this.analyser.fftSize = 2048;
+      var bufferLength = this.analyser.frequencyBinCount;
+      this.songBufferInfo[i]['dataArray'] = new Uint8Array(bufferLength);
+      console.log('analyser: ', this.analyser);
+      console.log('bufferLength: ', bufferLength);
+      console.log('dataArray: ', this.songBufferInfo[i]['dataArray']);
+      this.analyser.getByteTimeDomainData(this.songBufferInfo[i]['dataArray']);
+      console.log('dataArray: ', this.songBufferInfo[i]['dataArray']);
+      
+      // this.sourceVideo = audioCtx.createMediaElementSource(this.songBufferInfo[i].trackName);//??????
+      // this.sourceVideo.connect(this.analyser);
+      // console.log('video: ', this.sourceVideo);
+    // canvas = document.getElementById('analyser_render');
+    // ctx = canvas.getContext('2d'); // to animate frequeny, this not okay yet
 
-     // https://webaudioapi.com/samples/volume/
-    //  var sample = new VolumeSample();
-    //  VolumeSample.prototype.changeVolume = function(element) {
-    //     var volume = element.value;
-    //     var fraction = parseInt(element.value) / parseInt(element.max);
-    //     this.gainNode.gain.value = fraction * fraction;
-    // };
-
-    // var source = audioCtx.createMediaElementSource(this.songBufferInfo[i]['audioSource']);
+      // this.sourceVideo = audioCtx.createMediaElementSource(this.songBufferInfo[i]['buffer']);
+      // console.log('video: ', this.sourceVideo);
     // var analyser = audioCtx.createAnalyser();
     // source.connect(analyser);
     // analyser.fftSize = 2048;
@@ -147,6 +137,7 @@ export class TrackAudioManager {
       analyser = audioCtx.createAnalyser();
       // Re-route audio playback into the processing graph of the AudioContext
       source = audioCtx.createMediaElementSource(myAudio);
+      console.log('myAudio: ', myAudio);
       source.connect(analyser);
       analyser.connect(audioCtx.destination);
 

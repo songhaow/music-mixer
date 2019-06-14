@@ -133,6 +133,14 @@ document.getElementById("fname02").onchange = function(e) {
     // PositionObj.play2X = 0;
   }
 
+  document.querySelector('#volumeControl').onclick = function(element){ //Reference: webaudio-learn/webaudio-Volume-Control.html
+      var volume = element.target.value;
+      var fraction = parseInt(volume) / parseInt(element.target.max);
+      // use x*x curve (x-squared) since simple linear (x) does not sound as good.
+      console.log('gainNode: ', trackAudioManager.gainNode);
+      trackAudioManager.gainNode.gain.value = fraction * fraction;
+      console.log('Volume: ', trackAudioManager.gainNode.gain.value);
+  };
 
  function updateAudioPosition() {/////
    // const {currentTime, duration} = audio;

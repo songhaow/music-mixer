@@ -206,8 +206,7 @@ function renderAllTrackInfo(i, trackDisplayGroup, fname, trackTopY, trackBottomY
       trackTopY, trackBottomY, xScale, xAxis, xStart,xOffset);
 }
 
-/**
- * @param xScale: how much to "zoom in" x axis
+/* @param xScale: how much to "zoom in" x axis
  */
 function renderDraggableTrack(
         trackLinesGroup, beatListArray, waveListY, waveListYL, waveListYR, color, bckgdcolor,
@@ -231,7 +230,7 @@ function renderDraggableTrack(
       trackBkgrnd.attr('fill', bckgdcolor);
       trackBkgrnd.attr('class', 'dragRect');
       trackBkgrnd.attr('x', '0');
-      trackBkgrnd.attr('y', trackTopY + trackTopY);
+      trackBkgrnd.attr('y', trackTopY);
       trackBkgrnd.attr('width', xMax);
       trackBkgrnd.attr('height', trackBottomY - trackTopY);
 

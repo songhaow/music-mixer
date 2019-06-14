@@ -22,9 +22,6 @@ export const AudioSourceInterface = {
         trackAudioManager.songBufferInfo[i].waveFormData = waveData[0]; // wave amplitude distribution in time
         trackAudioManager.songBufferInfo[i].waveLeft = waveData[1];
         trackAudioManager.songBufferInfo[i].waveRight = waveData[2];
-        // console.log('valueLeft: ', waveData[1]);
-        // console.log('valueRight: ', waveData[2]);
-        // console.log('values: ', waveData[0]);
 
         var yMax = d3.max(trackAudioManager.songBufferInfo[i].waveFormData); // scale wave amplitude to the disply blocks
         for(var j = 0; j< beatNdTempo.beats.length; j++){
@@ -59,7 +56,6 @@ export const AudioSourceInterface = {
   xhr.send();
 }
 }
-
 
 function beatsAndTempo(audioBuffer, beatsNdTempo){ // music-tempo.min.js
   var audioData = [];

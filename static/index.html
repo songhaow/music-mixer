@@ -39,7 +39,6 @@
 
 <!-- https://fontawesome.com/icons/bold?style=solid  about icon graphs-->
 <!-- https://codepen.io/superpikar/pen/zJsgH -->
-
       <div class = "playbox">
           <button type="button" class="btn">
                <i style="font-size:22px" class="fa">&#xf031;</i>
@@ -79,19 +78,21 @@
     </div>
 
     <div class = "div03">
-          <div class = "inputbox">
-            A: <input id = "fname01" type="file" accept="mp3/m4a"></input>
-          </div>
-          <div class = "inputbox">
-            B: <input id = "fname02" type="file" accept="mp3/m4a"></input>
-          </div>
+      <div class = 'inputfile'>
+          A: <input id = "fname01" type="file" accept="mp3/m4a"></input>
+      </div>
+      <div>
+          <input id = "volumeControl" type="range" min="0" max="100" value="50"></input>
+      </div>
+      <div class = "inputfile">
+          B: <input id = "fname02" type="file" accept="mp3/m4a"></input>
+      </div>
     </div>
 
     <div id = "freq_graph">
          <div id = "audio_box">
            <audio controls></audio>
-           <button class="song-btn">Play</button>
-           <input type="range" min="0" max="100" value="50" oninput="sample.changeVolume(this);"><br>
+           <button class="song-btn">Play</button><br>
            <canvas id="fragment"></canvas><br>
          </div>
 
@@ -328,6 +329,7 @@
 
     <!-- </article> -->
     </div>
+
 </div>
 </body>
 
