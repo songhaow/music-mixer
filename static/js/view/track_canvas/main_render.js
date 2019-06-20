@@ -9,7 +9,9 @@ export const PositionObj = {
   play1Scale:1,
   play2Scale:1,
   track1Length:0,
-  track2Length:0
+  track2Length:0,
+  currentPlayCursorX:0,
+  currentPlayCursorY:0
 }
 
 export const TrackCanvasInterface = {
@@ -42,6 +44,8 @@ export const TrackCanvasInterface = {
     var svg = d3.select('svg');
     rerenderTracks(svg, trackInputInfoList);
     renderPlayCursor(svg);
+    dynamicPlayCursor01(svg);
+    dynamicPlayCursor02(svg);
     bindEventHandlers(svg);
     baseAxis(svg);
   },
@@ -81,8 +85,8 @@ function baseAxis(mainSvgEl){
 }
 
 /**
- * Render the blinking play cursor-line initially at position 0
- * @param mainSvgEl: main SVG element to draw on
+ * Render the blinking play cursor-line initially
+ at position 0 @param mainSvgEl: main SVG element to draw on
  */
 function renderPlayCursor(mainSvgEl) {
   var playCursorRect = mainSvgEl.append('rect')
@@ -90,6 +94,26 @@ function renderPlayCursor(mainSvgEl) {
                                 .attr('height', mainSvgEl.attr('height'))
                                 .attr('width', 2)
                                 .attr('fill', 'blue');
+}
+
+function dynamicPlayCursor01(mainSvgEl) {
+  var playCursorRect01 = mainSvgEl.append('rect')
+                                .attr('id', 'playCursorRect01')
+                                .attr('height', 50)
+                                .attr('y', 70)
+                                .attr('x', PositionObj.track1Start)
+                                .attr('width', 4)
+                                .attr('fill', 'red');
+}
+
+function dynamicPlayCursor02(mainSvgEl) {
+  var playCursorRect02 = mainSvgEl.append('rect')
+                                .attr('id', 'playCursorRect02')
+                                .attr('height', 50)
+                                .attr('y', 220)
+                                .attr('x', PositionObj.track2Start)
+                                .attr('width', 4)
+                                .attr('fill', 'green');
 }
 
 /**
@@ -135,6 +159,7 @@ function rerenderTracks(svg, trackInputInfoList) {
     var bckgdcolor = t.backgroundcolor;
     var trackTopY = i *1.5* (trackPaddingPx + trackHeightPx) + trackPaddingPx;
     var trackBottomY = trackTopY + trackHeightPx;
+    console.log('trackBottomY: ', trackBottomY);
 
     var trackDisplayGroup = svg.append('g');
     var w = svg.attr('width');
@@ -230,7 +255,7 @@ function renderDraggableTrack(
       trackBkgrnd.attr('fill', bckgdcolor);
       trackBkgrnd.attr('class', 'dragRect');
       trackBkgrnd.attr('x', '0');
-      trackBkgrnd.attr('y', trackTopY);
+      trackBkgrnd.attr('y', trackTopY+35);
       trackBkgrnd.attr('width', xMax);
       trackBkgrnd.attr('height', trackBottomY - trackTopY);
 
@@ -299,4 +324,6 @@ function dragged() {
 function dragended(trackInputInfoList) {
   d3.select(this).classed("active", false);
   PositionObj.track2Start = PositionObj.track2Start + (d3.event.x - d3.event.subject.x);
+  var svg = d3.select('svg');
+  dynamicPlayCursor02(svg);
 }

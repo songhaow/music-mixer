@@ -84,7 +84,7 @@ export class TrackAudioManager {
       console.log('dataArray: ', this.songBufferInfo[i]['dataArray']);
       this.analyser.getByteTimeDomainData(this.songBufferInfo[i]['dataArray']);
       console.log('dataArray: ', this.songBufferInfo[i]['dataArray']);
-      
+
       // this.sourceVideo = audioCtx.createMediaElementSource(this.songBufferInfo[i].trackName);//??????
       // this.sourceVideo.connect(this.analyser);
       // console.log('video: ', this.sourceVideo);
@@ -111,6 +111,8 @@ export class TrackAudioManager {
     this.songBufferInfo[i]['audioSource'].start(0, playOffsetSec, duration);
     var currentTime = audioCtx.currentTime;
     console.log('currentTime:', currentTime);
+    var duration01 = this.songBufferInfo[i]['buffer'].duration;
+    console.log('duration: ', duration01);
     this.frequencyDemo(i);
   }
 
